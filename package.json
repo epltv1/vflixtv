@@ -1,0 +1,13 @@
+{
+  "name": "sports-platform",
+  "version": "1.0.0",
+  "description": "Unified sports streaming platform",
+  "scripts": {
+    "start": "serve public",
+    "build": "echo 'No build step required'"
+  },
+  "devDependencies": {
+    "serve": "^14.2.3"
+  },
+  "license": "MIT"
+}
