@@ -263,7 +263,8 @@
       background: rgba(0, 0, 0, 0.9);
       display: none;
       justify-content: center;
-      align-items: center;
+      align-item
+      s: center;
       backdrop-filter: blur(5px);
       overflow-y: auto;
     }
@@ -630,6 +631,12 @@
   </style>
 </head>
 <body>
+  <nav style="background: #1C2526; padding: 10px; text-align: center;">
+    <a href="/" style="color: #FFD700; margin: 0 10px; text-decoration: none;">Home</a>
+    <a href="/events" style="color: #FFD700; margin: 0 10px; text-decoration: none;">Events</a>
+    <a href="/channels" style="color: #FFD700; margin: 0 10px; text-decoration: none;">Channels</a>
+  </nav>
+
   <!-- Matches Page -->
   <div id="matches-page">
     <div class="filter-buttons">
@@ -657,7 +664,7 @@
         <span>Fight</span>
       </div>
       <div class="event-logo" onclick="filterByCategory('Motorsports', this)">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR5AqbnaC__qeNhKAVib-FL752Dk3gm1yi3ajuydIzcJwC0aVLuZ8eDIpU&s=10" alt="Motorsports">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=CCRRB-ed7o0yyQwN8r94XI5fGt3xedIaimVoWmg&s" alt="Motorsports">
         <span>Motorsports</span>
       </div>
     </div>
@@ -711,24 +718,24 @@
         startTime: new Date("2025-05-03T00:10:00").getTime(),
         endTime: new Date("2025-05-04T20:59:00").getTime(),
         links: [
-          { title: "Willow Sports", url: "https://flixtvlive.vercel.app/tnt1.m3u8" }, 
+          { title: "Willow Sports", url: "https://flixtvlive.vercel.app/tnt1.m3u8" },
           { title: "Star Hindi", url: "https://epltv1.github.io/cbs.m3u8" },
           { title: "Sky Cricket", url: "https://epltv1.github.io/bt1.m3u8" },
-          { title: "Willow 2", url: "go:willow2" }     
+          { title: "Willow 2", url: "https://example.com/willow2.m3u8" } // TODO: Replace with real M3U8 URL
         ]
       },
       {
         id: "match-2",
         category: "Football",
         title: "Football | Serie A",
-        leagueLogo: "https://encrypted-tbn0.gstatic.com/images?q=CCRS1sAV0fK2UBs22cSi5IbiKCa6gNrRTK-HWnzCwSUkuU53txYoHTTJqsqfe&s=10",
+        leagueLogo: "https://encrypted-tbn0.gstatic.com/images?q=CCRS1sAV0fK2UBs22cSi5IbiKCa6gNrRT[bool](https://www.geeksforgeeks.org/javascript-boolean/)K-HWnzCwSUkuU53txYoHTTJqsqfe&s=10",
         teamA: { name: "Napoli", logo: "https://images.fotmob.com/image_resources/logo/teamlogo/9875.png" },
         teamB: { name: "Empoli", logo: "https://images.fotmob.com/image_resources/logo/teamlogo/8534.png" },
         startTime: new Date("2025-04-14T21:45:00").getTime(),
         endTime: new Date("2025-04-14T23:45:00").getTime(),
         links: [
-          { title: "Stream 1", url: "go:skymain" }, 
-          { title: "Stream 2", url: "go:opt1" }    
+          { title: "Stream 1", url: "https://example.com/skymain.m3u8" }, // TODO: Replace with real M3U8 URL
+          { title: "Stream 2", url: "https://example.com/opt1.m3u8" } // TODO: Replace with real M3U8 URL
         ]
       },
       {
@@ -741,7 +748,7 @@
         startTime: new Date("2025-04-14T22:00:00").getTime(),
         endTime: new Date("2025-04-14T23:59:00").getTime(),
         links: [
-          { title: "Stream 1", url: "go:opt3" }    
+          { title: "Stream 1", url: "https://example.com/opt3.m3u8" } // TODO: Replace with real M3U8 URL
         ]
       },
       {
@@ -754,7 +761,7 @@
         startTime: new Date("2025-04-14T22:00:00").getTime(),
         endTime: new Date("2025-04-14T23:59:00").getTime(),
         links: [
-          { title: "Stream 1", url: "go:skyf1" }    
+          { title: "Stream 1", url: "https://example.com/skyf1.m3u8" } // TODO: Replace with real M3U8 URL
         ]
       },
       {
@@ -767,8 +774,8 @@
         startTime: new Date("2025-05-06T03:00:00").getTime(),
         endTime: new Date("2025-05-06T05:00:00").getTime(),
         links: [
-          { title: "Stream 1", url: "go:laligafhd" }, 
-          { title: "Stream 2", url: "go:sliga" }    
+          { title: "Stream 1", url: "https://example.com/laligafhd.m3u8" }, // TODO: Replace with real M3U8 URL
+          { title: "Stream 2", url: "https://example.com/sliga.m3u8" } // TODO: Replace with real M3U8 URL
         ]
       },
       {
@@ -781,7 +788,7 @@
         startTime: new Date("2025-05-09T11:45:00").getTime(),
         endTime: new Date("2025-05-09T13:45:00").getTime(),
         links: [
-          { title: "Stream 1", url: "go:motogpstream" }
+          { title: "Stream 1", url: "https://example.com/motogpstream.m3u8" } // TODO: Replace with real M3U8 URL
         ]
       },
       {
@@ -794,7 +801,7 @@
         startTime: new Date("2025-05-02T19:30:00").getTime(),
         endTime: new Date("2025-05-02T21:30:00").getTime(),
         links: [
-          { title: "Stream 1", url: "go:f1stream" }
+          { title: "Stream 1", url: "https://example.com/f1stream.m3u8" } // TODO: Replace with real M3U8 URL
         ]
       },
       {
@@ -807,7 +814,7 @@
         startTime: new Date("2025-05-03T03:00:00").getTime(),
         endTime: new Date("2025-05-03T05:00:00").getTime(),
         links: [
-          { title: "Stream 1", url: "go:smackdownstream" }
+          { title: "Stream 1", url: "https://example.com/smackdownstream.m3u8" } // TODO: Replace with real M3U8 URL
         ]
       }
     ];
@@ -1194,9 +1201,9 @@
       if (!currentMatch) return;
 
       const now = Date.now();
-      const categoryMatches = originalMatches.filter(match => 
-        match.category === currentMatch.category && 
-        match.title !== currentTitle && 
+      const categoryMatches = originalMatches.filter(match =>
+        match.category === currentMatch.category &&
+        match.title !== currentTitle &&
         now <= match.endTime
       );
 
@@ -1297,7 +1304,7 @@
         filteredMatches = filteredMatches.filter(m => m.category === currentCategory);
       }
 
-      renderMatches(filteredMatches.filter(m => filter === "all" || 
+      renderMatches(filteredMatches.filter(m => filter === "all" ||
         (filter === "live" && Date.now() >= m.startTime && Date.now() <= m.endTime) ||
         (filter === "upcoming" && Date.now() < m.startTime) ||
         (filter === "recent" && Date.now() > m.endTime)));
@@ -1311,7 +1318,7 @@
       let filteredMatches = matches.filter(m => m.category === category);
       if (currentFilter !== "all") {
         const now = Date.now();
-        filteredMatches = filteredMatches.filter(m => 
+        filteredMatches = filteredMatches.filter(m =>
           (currentFilter === "live" && now >= m.startTime && now <= m.endTime) ||
           (currentFilter === "upcoming" && now < m.startTime) ||
           (currentFilter === "recent" && now > m.endTime));
