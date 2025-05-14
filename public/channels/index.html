@@ -6,48 +6,111 @@
   <title>Responsive Sports Networks Grid</title>
   <style>
     body {
-      background-color: #111810; /* Dark background */
+      background-color: #111810;
       color: #fff;
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
+      padding-top: 60px; /* Space for top bar */
+      padding-bottom: 60px; /* Space for bottom nav bar */
+    }
+
+    /* Top Bar */
+    .top-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 50px;
+      background-color: #222;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 10px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+    }
+
+    .top-bar .title {
+      font-size: 18px;
+      color: #FFD700;
+    }
+
+    .top-bar .icon {
+      width: 24px;
+      height: 24px;
+      filter: invert(100%); /* Make icons white */
+    }
+
+    /* Bottom Navigation Bar */
+    .nav-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 50px;
+      background-color: #222;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+    }
+
+    .nav-bar a {
+      color: #FFD700;
+      text-decoration: none;
+      font-size: 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .nav-bar a.active {
+      color: #00FF00; /* Highlight active page */
+    }
+
+    .nav-bar .icon {
+      width: 20px;
+      height: 20px;
+      margin-bottom: 2px;
+      filter: invert(100%);
     }
 
     .container {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); /* Dynamic columns based on screen size */
-      gap: 10px; /* Increased gap for better spacing */
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 10px;
       padding: 10px;
       justify-items: center;
     }
 
-    /* New container for the box-shaped icon */
     .logo-container {
       display: flex;
       flex-direction: column;
       align-items: center;
-      width: clamp(110px, 22vw, 130px); /* Slightly increased width to accommodate larger logo */
-      height: clamp(110px, 22vw, 130px); /* Slightly increased height to accommodate larger logo */
-      background: linear-gradient(135deg, #222, #333); /* Subtle gradient for attractiveness */
-      border: 2px solid #00ff00; /* Green border to match the theme */
-      border-radius: 10px; /* Slightly rounded corners for the box */
-      padding: clamp(5px, 1vw, 8px); /* Unchanged padding */
+      width: clamp(110px, 22vw, 130px);
+      height: clamp(110px, 22vw, 130px);
+      background: linear-gradient(135deg, #222, #333);
+      border: 2px solid #00ff00;
+      border-radius: 10px;
+      padding: clamp(5px, 1vw, 8px);
       cursor: pointer;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Subtle shadow for depth */
-      transition: all 0.3s ease-in-out; /* Smooth transition for hover effects */
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s ease-in-out;
     }
 
     .logo-container:hover {
-      border-color: #00cc00; /* Slightly darker green on hover */
-      box-shadow: 0 6px 12px rgba(0, 255, 0, 0.2); /* Glow effect on hover */
-      transform: translateY(-2px); /* Slight lift on hover */
+      border-color: #00cc00;
+      box-shadow: 0 6px 12px rgba(0, 255, 0, 0.2);
+      transform: translateY(-2px);
     }
 
     .logo {
-      width: clamp(90px, 18vw, 110px); /* Increased logo size */
-      height: clamp(90px, 18vw, 110px); /* Increased logo size */
-      border-radius: 5px; /* Unchanged */
-      border: 2px solid #00ff00; /* Unchanged */
+      width: clamp(90px, 18vw, 110px);
+      height: clamp(90px, 18vw, 110px);
+      border-radius: 5px;
+      border: 2px solid #00ff00;
       overflow: hidden;
       display: flex;
       align-items: center;
@@ -66,51 +129,49 @@
       transition: 0.3s ease-in-out;
     }
 
-    /* Style for the category name */
     .category-name {
-      margin-top: 3px; /* Unchanged */
-      font-size: clamp(9px, 1.3vw, 11px); /* Unchanged */
+      margin-top: 3px;
+      font-size: clamp(9px, 1.3vw, 11px);
       text-align: center;
-      color: #ddd; /* Slightly lighter color for contrast */
+      color: #ddd;
       text-transform: capitalize;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
       width: 100%;
-      font-weight: 500; /* Medium weight for better readability */
+      font-weight: 500;
     }
 
-    /* Responsive adjustments for different screen sizes */
     @media (max-width: 600px) {
       .container {
-        grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); /* Smaller columns for small screens */
+        grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
         gap: 8px;
       }
 
       .logo-container {
-        width: clamp(100px, 22vw, 120px); /* Adjusted for larger logo */
-        height: clamp(100px, 22vw, 120px); /* Adjusted for larger logo */
+        width: clamp(100px, 22vw, 120px);
+        height: clamp(100px, 22vw, 120px);
       }
 
       .logo {
-        width: clamp(80px, 18vw, 100px); /* Adjusted for larger logo on small screens */
+        width: clamp(80px, 18vw, 100px);
         height: clamp(80px, 18vw, 100px);
       }
     }
 
     @media (min-width: 1200px) {
       .container {
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Larger columns for large screens */
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
         gap: 15px;
       }
 
       .logo-container {
-        width: clamp(130px, 16vw, 150px); /* Adjusted for larger logo */
-        height: clamp(130px, 20vw, 150px); /* Adjusted for larger logo */
+        width: clamp(130px, 16vw, 150px);
+        height: clamp(130px, 20vw, 150px);
       }
 
       .logo {
-        width: clamp(100px, 14vw, 120px); /* Adjusted for larger logo on large screens */
+        width: clamp(100px, 14vw, 120px);
         height: clamp(100px, 14vw, 120px);
       }
 
@@ -119,37 +180,36 @@
       }
     }
 
-    /* Modal Styles */
     .modal {
-      display: none; /* Hidden by default */
+      display: none;
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
+      background-color: rgba(0, 0, 0, 0.7);
       justify-content: center;
       align-items: center;
       z-index: 1000;
-      overflow-y: auto; /* Allow scrolling if content overflows */
+      overflow-y: auto;
     }
 
     .modal-content {
       background-color: #333;
       color: #fff;
-      padding: clamp(15px, 3vw, 25px); /* Responsive padding */
+      padding: clamp(15px, 3vw, 25px);
       border-radius: 10px;
-      width: clamp(250px, 80vw, 400px); /* Responsive width */
-      max-height: 80vh; /* Limit height to 80% of viewport height */
-      overflow-y: auto; /* Scroll if content overflows */
+      width: clamp(250px, 80vw, 400px);
+      max-height: 80vh;
+      overflow-y: auto;
       text-align: center;
       position: relative;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Subtle shadow for depth */
-      margin: 10px; /* Margin to prevent sticking to edges on small screens */
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      margin: 10px;
     }
 
     .modal-content h3 {
-      font-size: clamp(16px, 3vw, 20px); /* Responsive heading size */
+      font-size: clamp(16px, 3vw, 20px);
       margin: 0 0 15px 0;
     }
 
@@ -157,18 +217,17 @@
       display: block;
       color: #00ff00;
       text-decoration: none;
-      margin: clamp(5px, 1vw, 10px) 0; /* Responsive margin */
-      padding: clamp(8px, 1.5vw, 12px); /* Responsive padding */
+      margin: clamp(5px, 1vw, 10px) 0;
+      padding: clamp(8px, 1.5vw, 12px);
       border: 1px solid #00ff00;
       border-radius: 5px;
       background-color: #444;
-      font-size: clamp(12px, 2vw, 14px); /* Responsive font size */
+      font-size: clamp(12px, 2vw, 14px);
       transition: background-color 0.3s ease-in-out;
     }
 
     .modal-content a:hover {
-      background-color: #555; /* Slightly lighter background on hover */
-      text-decoration: none; /* Remove underline on hover */
+      background-color: #555;
     }
 
     .close-button {
@@ -180,70 +239,67 @@
       border: none;
       border-radius: 5px;
       cursor: pointer;
-      padding: clamp(5px, 1vw, 10px); /* Responsive padding */
-      font-size: clamp(12px, 1.5vw, 14px); /* Responsive font size */
+      padding: clamp(5px, 1vw, 10px);
+      font-size: clamp(12px, 1.5vw, 14px);
       transition: background-color 0.3s ease-in-out;
     }
 
     .close-button:hover {
-      background-color: #cc0000; /* Darker red on hover */
+      background-color: #cc0000;
     }
 
-    /* Responsive adjustments for modal on smaller screens */
     @media (max-width: 600px) {
       .modal-content {
-        width: clamp(200px, 90vw, 300px); /* Smaller width for mobile */
-        padding: clamp(10px, 2vw, 15px); /* Reduced padding */
-        max-height: 70vh; /* Slightly smaller height on mobile */
+        width: clamp(200px, 90vw, 300px);
+        padding: clamp(10px, 2vw, 15px);
+        max-height: 70vh;
       }
 
       .modal-content h3 {
-        font-size: clamp(14px, 2.5vw, 18px); /* Smaller heading */
+        font-size: clamp(14px, 2.5vw, 18px);
       }
 
       .modal-content a {
-        font-size: clamp(11px, 1.8vw, 13px); /* Smaller font size for links */
-        padding: clamp(6px, 1vw, 8px); /* Reduced padding for links */
+        font-size: clamp(11px, 1.8vw, 13px);
+        padding: clamp(6px, 1vw, 8px);
       }
 
       .close-button {
-        padding: clamp(4px, 0.8vw, 8px); /* Smaller padding */
-        font-size: clamp(10px, 1.2vw, 12px); /* Smaller font size */
+        padding: clamp(4px, 0.8vw, 8px);
+        font-size: clamp(10px, 1.2vw, 12px);
       }
     }
 
-    /* Responsive adjustments for modal on larger screens */
     @media (min-width: 1200px) {
       .modal-content {
-        width: clamp(350px, 50vw, 450px); /* Larger width for desktop */
-        padding: clamp(20px, 2vw, 30px); /* Increased padding */
+        width: clamp(350px, 50vw, 450px);
+        padding: clamp(20px, 2vw, 30px);
       }
 
       .modal-content h3 {
-        font-size: clamp(18px, 1.5vw, 22px); /* Larger heading */
+        font-size: clamp(18px, 1.5vw, 22px);
       }
 
       .modal-content a {
-        font-size: clamp(13px, 1vw, 15px); /* Larger font size for links */
-        padding: clamp(10px, 1vw, 14px); /* Increased padding for links */
+        font-size: clamp(13px, 1vw, 15px);
+        padding: clamp(10px, 1vw, 14px);
       }
 
       .close-button {
-        padding: clamp(6px, 0.5vw, 12px); /* Slightly larger padding */
-        font-size: clamp(13px, 1vw, 15px); /* Larger font size */
+        padding: clamp(6px, 0.5vw, 12px);
+        font-size: clamp(13px, 1vw, 15px);
       }
     }
 
-    /* Ad Banner - Default Style */
     .ad-banner {
-      width: 100%; /* Full width */
-      height: clamp(70px, 10vw, 90px); /* Responsive height */
-      background-color: #fff; /* Same as channel cards */
-      border: 2px solid #00ff00; /* Green border */
+      width: 100%;
+      height: clamp(70px, 10vw, 90px);
+      background-color: #fff;
+      border: 2px solid #00ff00;
       border-radius: 10px;
       text-align: center;
       padding: 10px;
-      margin: 20px 0; /* Center with some vertical spacing */
+      margin: 20px 0;
     }
 
     .ad-banner img {
@@ -254,11 +310,12 @@
   </style>
 </head>
 <body>
-  <nav style="background: #111810; padding: 10px; text-align: center;">
-    <a href="/" style="color: #FFD700; margin: 0 10px; text-decoration: none;">Home</a>
-    <a href="/events" style="color: #FFD700; margin: 0 10px; text-decoration: none;">Events</a>
-    <a href="/channels" style="color: #FFD700; margin: 0 10px; text-decoration: none;">Channels</a>
-  </nav>
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <img src="https://via.placeholder.com/24?text=←" alt="Back Icon" class="icon">
+    <span class="title">Sports Platform</span>
+    <img src="https://via.placeholder.com/24?text=☰" alt="Menu Icon" class="icon">
+  </div>
 
   <div class="container" id="logoContainer">
     <div class="logo-container" onclick="openModal('modal1')">
@@ -277,7 +334,7 @@
       <div class="logo"><img src="https://encrypted-tbn0.gstatic.com/images?q=CCQG9mNdB2pgLZgvfx55FvTrYxe4oa0QrCAoew&s" alt="Tnt Sports"></div>
       <div class="category-name">Tnt Sports</div>
     </div>
-    <div class="logo-container" onclick="open_mostringent('modal5')">
+    <div class="logo-container" onclick="openModal('modal5')">
       <div class="logo"><img src="https://encrypted-tbn0.gstatic.com/images?q=CCTTrKQ40uuw96bw9ZwV4ep736dayz7m9i9pW9duGCQRM1TkfVpwYu7R0mxJ&s=10" alt="Optus Sports"></div>
       <div class="category-name">Optus Sports</div>
     </div>
@@ -339,7 +396,19 @@
     </div>
   </div>
 
-  <!-- Individual Modals -->
+  <!-- Bottom Navigation Bar -->
+  <nav class="nav-bar">
+    <a href="/events" class="">
+      <img src="https://via.placeholder.com/20?text=🎥" alt="Events Icon" class="icon">
+      <span>Events</span>
+    </a>
+    <a href="/channels" class="active">
+      <img src="https://via.placeholder.com/20?text=📺" alt="Channels Icon" class="icon">
+      <span>Channels</span>
+    </a>
+  </nav>
+
+  <!-- Modals (unchanged) -->
   <div class="modal" id="modal1">
     <div class="modal-content">
       <button class="close-button" onclick="closeModal('modal1')">Close</button>
@@ -354,7 +423,6 @@
       <a href="https://example.com/pl.m3u8" target="_blank">Pl</a> <!-- TODO: Replace with real M3U8 URL -->
     </div>
   </div>
-
   <div class="modal" id="modal2">
     <div class="modal-content">
       <button class="close-button" onclick="closeModal('modal2')">Close</button>
@@ -367,7 +435,6 @@
       <a href="https://example.com/ssce.m3u8" target="_blank">SSC Extra</a> <!-- TODO: Replace with real M3U8 URL -->
     </div>
   </div>
-
   <div class="modal" id="modal3">
     <div class="modal-content">
       <button class="close-button" onclick="closeModal('modal3')">Close</button>
@@ -375,7 +442,6 @@
       <a href="https://example.com/laligatv.m3u8" target="_blank">Laliga Tv</a> <!-- TODO: Replace with real M3U8 URL -->
     </div>
   </div>
-
   <div class="modal" id="modal4">
     <div class="modal-content">
       <button class="close-button" onclick="closeModal('modal4')">Close</button>
@@ -392,7 +458,6 @@
       <a href="https://example.com/tnt10.m3u8" target="_blank">Tnt Sports 10</a> <!-- TODO: Replace with real M3U8 URL -->
     </div>
   </div>
-
   <div class="modal" id="modal5">
     <div class="modal-content">
       <button class="close-button" onclick="closeModal('modal5')">Close</button>
@@ -408,7 +473,6 @@
       <a href="https://example.com/opt9.m3u8" target="_blank">Optus 9</a> <!-- TODO: Replace with real M3U8 URL -->
     </div>
   </div>
-
   <div class="modal" id="modal6">
     <div class="modal-content">
       <button class="close-button" onclick="closeModal('modal6')">Close</button>
@@ -427,7 +491,6 @@
       <a href="https://example.com/bein12.m3u8" target="_blank">Bein Sports 12</a> <!-- TODO: Replace with real M3U8 URL -->
     </div>
   </div>
-
   <div class="modal" id="modal7">
     <div class="modal-content">
       <button class="close-button" onclick="closeModal('modal7')">Close</button>
@@ -443,7 +506,6 @@
       <a href="https://example.com/skymix.m3u8" target="_blank">Mix</a> <!-- TODO: Replace with real M3U8 URL -->
     </div>
   </div>
-
   <div class="modal" id="modal8">
     <div class="modal-content">
       <button class="close-button" onclick="closeModal('modal8')">Close</button>
@@ -455,7 +517,6 @@
       <a href="https://example.com/canal5.m3u8" target="_blank">Canal+ Sport 5</a> <!-- TODO: Replace with real M3U8 URL -->
     </div>
   </div>
-
   <div class="modal" id="modal9">
     <div class="modal-content">
       <button class="close-button" onclick="closeModal('modal9')">Close</button>
@@ -467,7 +528,6 @@
       <a href="https://example.com/tsn5.m3u8" target="_blank">TSN 5</a> <!-- TODO: Replace with real M3U8 URL -->
     </div>
   </div>
-
   <div class="modal" id="modal10">
     <div class="modal-content">
       <button class="close-button" onclick="closeModal('modal10')">Close</button>
@@ -475,7 +535,6 @@
       <a href="https://example.com/nbatv.m3u8" target="_blank">NBA TV</a> <!-- TODO: Replace with real M3U8 URL -->
     </div>
   </div>
-
   <div class="modal" id="modal11">
     <div class="modal-content">
       <button class="close-button" onclick="closeModal('modal11')">Close</button>
@@ -487,7 +546,6 @@
       <a href="https://example.com/nbcb.m3u8" target="_blank">NBC Boston</a> <!-- TODO: Replace with real M3U8 URL -->
     </div>
   </div>
-
   <div class="modal" id="modal12">
     <div class="modal-content">
       <button class="close-button" onclick="closeModal('modal12')">Close</button>
@@ -496,7 +554,6 @@
       <a href="https://example.com/euro2.m3u8" target="_blank">Eurosport 2</a> <!-- TODO: Replace with real M3U8 URL -->
     </div>
   </div>
-
   <div class="modal" id="modal13">
     <div class="modal-content">
       <button class="close-button" onclick="closeModal('modal13')">Close</button>
@@ -505,7 +562,6 @@
       <a href="https://example.com/fox2.m3u8" target="_blank">Fox Sports 2</a> <!-- TODO: Replace with real M3U8 URL -->
     </div>
   </div>
-
   <div class="modal" id="modal14">
     <div class="modal-content">
       <button class="close-button" onclick="closeModal('modal14')">Close</button>
@@ -522,7 +578,6 @@
       <a href="https://example.com/arena10.m3u8" target="_blank">Arena Sport 10</a> <!-- TODO: Replace with real M3U8 URL -->
     </div>
   </div>
-
   <div class="modal" id="modal15">
     <div class="modal-content">
       <button class="close-button" onclick="closeModal('modal15')">Close</button>
@@ -538,7 +593,6 @@
       <a href="https://example.com/novanews.m3u8" target="_blank">Nova Sports News</a> <!-- TODO: Replace with real M3U8 URL -->
     </div>
   </div>
-
   <div class="modal" id="modal16">
     <div class="modal-content">
       <button class="close-button" onclick="closeModal('modal16')">Close</button>
@@ -547,7 +601,6 @@
       <a href="https://example.com/dazn2.m3u8" target="_blank">Dazn 2</a> <!-- TODO: Replace with real M3U8 URL -->
     </div>
   </div>
-
   <div class="modal" id="modal17">
     <div class="modal-content">
       <button class="close-button" onclick="closeModal('modal17')">Close</button>
@@ -561,7 +614,6 @@
       <a href="https://example.com/now7.m3u8" target="_blank">Now Sports 7</a> <!-- TODO: Replace with real M3U8 URL -->
     </div>
   </div>
-
   <div class="modal" id="modal18">
     <div class="modal-content">
       <button class="close-button" onclick="closeModal('modal18')">Close</button>
@@ -569,7 +621,6 @@
       <a href="https://example.com/f1tv.m3u8" target="_blank">F1 TV</a> <!-- TODO: Replace with real M3U8 URL -->
     </div>
   </div>
-
   <div class="modal" id="modal19">
     <div class="modal-content">
       <button class="close-button" onclick="closeModal('modal19')">Close</button>
