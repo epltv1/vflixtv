@@ -3,64 +3,62 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sports Platform</title>
+  <title>Loading - Sports Platform</title>
   <style>
     body {
-      background: #111810;
-      color: #FFFFFF;
-      font-family: Arial, sans-serif;
+      background-color: #111810; /* Dark background */
       margin: 0;
       padding: 0;
-      text-align: center;
-      min-height: 100vh;
+      height: 100vh;
       display: flex;
       flex-direction: column;
       justify-content: center;
+      align-items: center;
+      font-family: Arial, sans-serif;
+      color: #fff;
     }
-    nav {
-      background: #111810;
-      padding: 10px;
-      text-align: center;
+
+    .logo img {
+      width: 150px;
+      height: 150px;
+      margin-bottom: 20px;
     }
-    nav a {
-      color: #FFD700;
-      margin: 0 10px;
-      text-decoration: none;
-      font-size: 18px;
+
+    /* Loading Animation */
+    .loader {
+      border: 5px solid #333; /* Dark grey border */
+      border-top: 5px solid #00FF00; /* Green top border for spinning effect */
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
     }
-    nav a:hover {
-      color: #00FF00;
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
-    h1 {
-      font-size: 36px;
-      margin: 20px 0;
-    }
-    .button {
-      background: #2B2F30;
-      color: #FFFFFF;
-      border: 1px solid #00FF00;
-      border-radius: 10px;
-      padding: 15px 30px;
-      margin: 10px;
-      text-decoration: none;
-      font-size: 20px;
-      display: inline-block;
-      transition: all 0.3s ease;
-    }
-    .button:hover {
-      background: #3A3F40;
-      transform: scale(1.05);
+
+    .version {
+      font-size: 14px;
+      color: #FFD700; /* Gold text */
     }
   </style>
 </head>
 <body>
-  <nav>
-    <a href="/">Home</a>
-    <a href="/events">Events</a>
-    <a href="/channels">Channels</a>
-  </nav>
-  <h1>Welcome to Sports Platform</h1>
-  <a href="/events" class="button">Watch Live Events</a>
-  <a href="/channels" class="button">Browse Sports Channels</a>
+  <div class="logo">
+    <img src="https://via.placeholder.com/150" alt="Sports Platform Logo">
+    <!-- Replace with your actual logo URL -->
+  </div>
+  <div class="loader"></div>
+  <div class="version">Version 1.0</div>
+
+  <script>
+    // Redirect to Livestream Events page after 3 seconds
+    setTimeout(() => {
+      window.location.href = '/events';
+    }, 3000);
+  </script>
 </body>
 </html>
