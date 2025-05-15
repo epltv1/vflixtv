@@ -91,6 +91,16 @@
       100% { transform: scale(1); opacity: 1; }
     }
 
+    .error-message {
+      font-size: 16px;
+      color: #FFD700;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: none;
+    }
+
     /* Top Bar */
     .top-bar {
       position: fixed;
@@ -914,6 +924,7 @@
     <div class="loader"></div>
     <div class="loading-text">Vflix</div>
   </div>
+  <div class="error-message" id="error-message">Failed to load events. Please try again.</div>
 
   <!-- Top Bar -->
   <div class="top-bar">
@@ -961,23 +972,23 @@
 
     <div class="event-logos">
       <div class="event-logo" onclick="filterByCategory('Football', this)">
-        <img src="https://cdn-icons-png.flaticon.com/512/195/195545.png" alt="Football">
+        <img src="https://cdn-icons-png.flaticon.com/512/195/195545.png" alt="Football" onerror="this.src='https://via.placeholder.com/30?text=⚽'">
         <span>Football</span>
       </div>
       <div class="event-logo" onclick="filterByCategory('Cricket', this)">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=CCRT-eFQpZW6oSCeedeyIkRyCWRTw7ntVrSRQrobMBCK0m9aKSR299mgyMcY&s=10" alt="Cricket">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=CCRT-eFQpZW6oSCeedeyIkRyCWRTw7ntVrSRQrobMBCK0m9aKSR299mgyMcY&s=10" alt="Cricket" onerror="this.src='https://via.placeholder.com/30?text=🏏'">
         <span>Cricket</span>
       </div>
       <div class="event-logo" onclick="filterByCategory('Basketball', this)">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=CCRT82qffasKegmgvFju5kT_gdZRBcMvh8EfXB50DP9wQt1-haUnIe8UqrKRN&s=10" alt="NBA">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=CCRT82qffasKegmgvFju5kT_gdZRBcMvh8EfXB50DP9wQt1-haUnIe8UqrKRN&s=10" alt="NBA" onerror="this.src='https://via.placeholder.com/30?text=🏀'">
         <span>NBA</span>
       </div>
       <div class="event-logo" onclick="filterByCategory('Fight', this)">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=CCRT82qffasKegmgvFju5kT_gdZRBcMvh8EfXB50DP9wQt1-haUnIe8UqrKRN&s=10" alt="Fight">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=CCRT82qffasKegmgvFju5kT_gdZRBcMvh8EfXB50DP9wQt1-haUnIe8UqrKRN&s=10" alt="Fight" onerror="this.src='https://via.placeholder.com/30?text=🥊'">
         <span>Fight</span>
       </div>
       <div class="event-logo" onclick="filterByCategory('Motorsports', this)">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=CCRRB-ed7o0yyQwN8r94XI5fGt3xedIaimVoWmg&s" alt="Motorsports">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=CCRRB-ed7o0yyQwN8r94XI5fGt3xedIaimVoWmg&s" alt="Motorsports" onerror="this.src='https://via.placeholder.com/30?text=🏎️'">
         <span>Motorsports</span>
       </div>
     </div>
@@ -1014,7 +1025,7 @@
 
   <!-- Bottom Navigation Bar -->
   <nav class="nav-bar">
-    <a href="/sports" class="">
+    <a href="/channels">
       <img src="https://via.placeholder.com/20?text=⚽" alt="Sports Icon" class="icon">
       <span>Sports</span>
     </a>
@@ -1031,13 +1042,6 @@
   <script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
   <script src="https://unpkg.com/videojs-chromecast@2.1.0/dist/videojs-chromecast.min.js"></script>
   <script>
-    // Show loading animation on page load
-    window.addEventListener('load', () => {
-      setTimeout(() => {
-        document.getElementById('loading-overlay').style.display = 'none';
-      }, 2000); // 2-second loading animation
-    });
-
     // Theme Toggle Functionality
     function toggleTheme() {
       const body = document.body;
@@ -1045,10 +1049,10 @@
       const currentTheme = body.getAttribute('data-theme');
       if (currentTheme === 'light') {
         body.setAttribute('data-theme', 'dark');
-        themeIcon.src = 'https://encrypted-tbn0.gstatic.com/images?q=tbn9GcT5wR7iE2zL7R9G8vW1z0kN9e1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r&s=10'; // Sun icon for dark mode
+        themeIcon.src = 'https://encrypted-tbn0.gstatic.com/images?q=CCRT-eFQpZW6oSCeedeyIkRyCWRTw7ntVrSRQrobMBCK0m9aKSR299mgyMcY&s=10'; // Sun icon for dark mode
       } else {
         body.setAttribute('data-theme', 'light');
-        themeIcon.src = 'https://encrypted-tbn0.gstatic.com/images?q=tbn9GcS1u2v3w4x5y6z7a8b9c0d1e2f3g4h5i6j7k8l9m0n1o2p3q4r5&s=10'; // Moon icon for light mode
+        themeIcon.src = 'https://encrypted-tbn0.gstatic.com/images?q=CCRT82qffasKegmgvFju5kT_gdZRBcMvh8EfXB50DP9wQt1-haUnIe8UqrKRN&s=10'; // Moon icon for light mode
       }
     }
 
@@ -1060,7 +1064,7 @@
 
     // Toggle Navigation Drawer
     function toggleDrawer() {
-      const drawer = document.getElementById('navstates: normal;
+      const drawer = document.getElementById('nav-drawer');
       drawer.classList.toggle('open');
     }
 
@@ -1366,60 +1370,72 @@
 
     function renderMatches(filteredMatches) {
       const container = document.getElementById("match-container");
+      const loadingOverlay = document.getElementById('loading-overlay');
+      const errorMessage = document.getElementById('error-message');
       container.innerHTML = '';
 
       if (filteredMatches.length === 0) {
         container.innerHTML = '<div class="no-events">No events available</div>';
+        loadingOverlay.style.display = 'none';
         return;
       }
 
-      filteredMatches.forEach(match => {
-        const card = document.createElement("div");
-        card.className = "match-card";
-        const localTime = new Date(match.startTime).toLocaleTimeString('en-US', {
-          hour: 'numeric',
-          minute: '2-digit',
-          hour12: true
+      try {
+        filteredMatches.forEach(match => {
+          const card = document.createElement("div");
+          card.className = "match-card";
+          const localTime = new Date(match.startTime).toLocaleTimeString('en-US', {
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true
+          });
+          const localDate = new Date(match.startTime).toLocaleDateString('en-US', {
+            month: 'numeric',
+            day: '2-digit',
+            year: 'numeric'
+          });
+
+          card.innerHTML = `
+            <div class="match-title-container">
+              <img src="${match.leagueLogo}" alt="League Logo" class="league-logo" onerror="this.src='https://via.placeholder.com/20?text=🏆'">
+              <div class="match-title">${match.title}</div>
+            </div>
+            <div class="teams">
+              <div class="team">
+                <img src="${match.teamA.logo}" alt="${match.teamA.name}" onerror="this.src='https://via.placeholder.com/60?text=⚽'">
+                <div class="team-name">${match.teamA.name}</div>
+              </div>
+              <div class="live-text hidden" id="live-${match.id}">LIVE</div>
+              <div class="datetime-container hidden" id="datetime-${match.id}">
+                <div class="event-time">${localTime}</div>
+                <div class="event-date">${localDate}</div>
+              </div>
+              <div class="team">
+                <img src="${match.teamB.logo}" alt="${match.teamB.name}" onerror="this.src='https://via.placeholder.com/60?text=⚽'">
+                <div class="team-name">${match.teamB.name}</div>
+              </div>
+            </div>
+            <div class="timer" id="timer-${match.id}">Loading...</div>
+          `;
+
+          const now = Date.now();
+          const tenMinutesBefore = match.startTime - (10 * 60 * 1000);
+          if (now >= tenMinutesBefore && now <= match.endTime) {
+            card.addEventListener("click", () => openOverlay(match));
+          }
+
+          container.appendChild(card);
         });
-        const localDate = new Date(match.startTime).toLocaleDateString('en-US', {
-          month: 'numeric',
-          day: '2-digit',
-          year: 'numeric'
-        });
 
-        card.innerHTML = `
-          <div class="match-title-container">
-            <img src="${match.leagueLogo}" alt="League Logo" class="league-logo">
-            <div class="match-title">${match.title}</div>
-          </div>
-          <div class="teams">
-            <div class="team">
-              <img src="${match.teamA.logo}" alt="${match.teamA.name}">
-              <div class="team-name">${match.teamA.name}</div>
-            </div>
-            <div class="live-text hidden" id="live-${match.id}">LIVE</div>
-            <div class="datetime-container hidden" id="datetime-${match.id}">
-              <div class="event-time">${localTime}</div>
-              <div class="event-date">${localDate}</div>
-            </div>
-            <div class="team">
-              <img src="${match.teamB.logo}" alt="${match.teamB.name}">
-              <div class="team-name">${match.teamB.name}</div>
-            </div>
-          </div>
-          <div class="timer" id="timer-${match.id}">Loading...</div>
-        `;
-
-        const now = Date.now();
-        const tenMinutesBefore = match.startTime - (10 * 60 * 1000);
-        if (now >= tenMinutesBefore && now <= match.endTime) {
-          card.addEventListener("click", () => openOverlay(match));
-        }
-
-        container.appendChild(card);
-      });
-
-      updateTimers();
+        // Hide loading overlay after rendering
+        loadingOverlay.style.display = 'none';
+        errorMessage.style.display = 'none';
+        updateTimers();
+      } catch (error) {
+        console.error('Error rendering matches:', error);
+        loadingOverlay.style.display = 'none';
+        errorMessage.style.display = 'block';
+      }
     }
 
     function formatTime(ms) {
@@ -1621,12 +1637,12 @@
         card.className = "match-card";
         card.innerHTML = `
           <div class="match-title-container">
-            <img src="${match.leagueLogo}" alt="League Logo" class="league-logo">
+            <img src="${match.leagueLogo}" alt="League Logo" class="league-logo" onerror="this.src='https://via.placeholder.com/20?text=🏆'">
             <div class="match-title">${match.title}</div>
           </div>
           <div class="teams">
             <div class="team">
-              <img src="${match.teamA.logo}" alt="${match.teamA.name}">
+              <img src="${match.teamA.logo}" alt="${match.teamA.name}" onerror="this.src='https://via.placeholder.com/60?text=⚽'">
               <div class="team-name">${match.teamA.name}</div>
             </div>
             <div class="live-text hidden" id="live-suggested-${match.id}">LIVE</div>
@@ -1635,7 +1651,7 @@
               <div class="event-date">${localDate}</div>
             </div>
             <div class="team">
-              <img src="${match.teamB.logo}" alt="${match.teamB.name}">
+              <img src="${match.teamB.logo}" alt="${match.teamB.name}" onerror="this.src='https://via.placeholder.com/60?text=⚽'">
               <div class="team-name">${match.teamB.name}</div>
             </div>
           </div>
@@ -1721,8 +1737,19 @@
       initializePlayer();
       history.pushState({ page: 'matches' }, '', '#matches');
       updateCounts();
+
+      // Add a timeout to ensure the loading overlay doesn't stay forever
+      setTimeout(() => {
+        const loadingOverlay = document.getElementById('loading-overlay');
+        const errorMessage = document.getElementById('error-message');
+        if (loadingOverlay.style.display !== 'none') {
+          loadingOverlay.style.display = 'none';
+          errorMessage.style.display = 'block';
+        }
+      }, 5000); // 5-second timeout
+
       renderMatches(matches);
     });
   </script>
 </body>
-</html>
+  </html>
