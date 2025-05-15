@@ -11,9 +11,31 @@
   <!-- Chromecast Receiver CSS -->
   <link href="https://unpkg.com/videojs-chromecast@2.1.0/dist/videojs-chromecast.css" rel="stylesheet" />
   <style>
+    /* Define CSS Variables for Theming */
+    :root {
+      --background-color: #1C2526; /* Dark mode background */
+      --text-color: #FFFFFF; /* Dark mode text */
+      --top-bar-bg: #1A1A1A; /* Dark mode top bar */
+      --card-bg-start: #2A2A2A; /* Dark mode card gradient start */
+      --card-bg-end: #1A1A1A; /* Dark mode card gradient end */
+      --container-bg: #2B2F30; /* Dark mode container */
+      --hover-bg: #3A3F40; /* Dark mode hover */
+    }
+
+    /* Light Mode */
+    [data-theme="light"] {
+      --background-color: #FFFFFF; /* Light mode background */
+      --text-color: #000000; /* Light mode text */
+      --top-bar-bg: #F0F0F0; /* Light mode top bar */
+      --card-bg-start: #E0E0E0; /* Light mode card gradient start */
+      --card-bg-end: #D0D0D0; /* Light mode card gradient end */
+      --container-bg: #E5E5E5; /* Light mode container */
+      --hover-bg: #D5D5D5; /* Light mode hover */
+    }
+
     body {
-      background: #1C2526;
-      color: #FFFFFF;
+      background: var(--background-color);
+      color: var(--text-color);
       font-family: 'Arial', sans-serif;
       margin: 0;
       padding: 0;
@@ -33,7 +55,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: #1C2526;
+      background: var(--background-color);
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -44,7 +66,7 @@
     .loader {
       width: 50px;
       height: 50px;
-      border: 5px solid #FFFFFF;
+      border: 5px solid var(--text-color);
       border-top: 5px solid #00FF00;
       border-radius: 50%;
       animation: spin 1s linear infinite;
@@ -59,7 +81,7 @@
       margin-top: 20px;
       font-size: 24px;
       font-weight: bold;
-      color: #FFFFFF;
+      color: var(--text-color);
       animation: pulse-text 1.5s ease-in-out infinite;
     }
 
@@ -76,7 +98,7 @@
       left: 0;
       width: 100%;
       height: 50px;
-      background-color: #1A1A1A;
+      background-color: var(--top-bar-bg);
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -94,41 +116,60 @@
       width: 24px;
       height: 24px;
       cursor: pointer;
-      background: none; /* Ensure no background */
-      background-color: transparent; /* Ensure no background color */
-      filter: invert(100%); /* Make icon white */
+      background: none;
+      background-color: transparent;
+      filter: invert(100%);
     }
 
     .top-bar .site-name {
       font-size: 18px;
-      color: #FFFFFF;
+      color: var(--text-color);
       font-weight: 600;
       margin-left: 10px;
+    }
+
+    /* Center Section for Theme Icon */
+    .top-bar .center-section {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+    }
+
+    .top-bar .theme-icon {
+      width: 24px;
+      height: 24px;
+      cursor: pointer;
+      background: none;
+      background-color: transparent;
+      filter: invert(100%);
     }
 
     .top-bar .right-section {
       display: flex;
       align-items: center;
-      gap: 15px;
+      gap: clamp(15px, 2vw, 20px); /* Responsive spacing */
+      padding-right: 15px; /* Shift icons to the left */
     }
 
     .top-bar .icon {
       width: 24px;
       height: 24px;
       cursor: pointer;
-      background: none; /* Ensure no background */
-      background-color: transparent; /* Ensure no background color */
-      filter: invert(100%); /* Make icon white */
+      background: none;
+      background-color: transparent;
+      filter: invert(100%);
     }
 
     /* Navigation Drawer */
     .nav-drawer {
       position: fixed;
       top: 0;
-      left: -250px; /* Hidden by default */
+      left: -250px;
       width: 250px;
       height: 100%;
-      background-color: #2B2F30;
+      background-color: var(--container-bg);
       box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
       z-index: 2000;
       transition: left 0.3s ease;
@@ -154,14 +195,14 @@
 
     .nav-drawer ul li {
       padding: 15px 20px;
-      color: #FFFFFF;
+      color: var(--text-color);
       font-size: 16px;
       cursor: pointer;
       transition: background-color 0.3s;
     }
 
     .nav-drawer ul li:hover {
-      background-color: #3A3F40;
+      background-color: var(--hover-bg);
     }
 
     /* Search Bar */
@@ -170,7 +211,7 @@
       top: 50px;
       left: 0;
       width: 100%;
-      background-color: #2B2F30;
+      background-color: var(--container-bg);
       padding: 10px;
       display: none;
       z-index: 1000;
@@ -186,8 +227,8 @@
       font-size: 16px;
       border: 1px solid #00FF00;
       border-radius: 5px;
-      background-color: #1A1A1A;
-      color: #FFFFFF;
+      background-color: var(--top-bar-bg);
+      color: var(--text-color);
       outline: none;
     }
 
@@ -198,7 +239,7 @@
       left: 0;
       width: 100%;
       height: 50px;
-      background-color: #1A1A1A;
+      background-color: var(--top-bar-bg);
       display: flex;
       justify-content: space-around;
       align-items: center;
@@ -207,7 +248,7 @@
     }
 
     .nav-bar a {
-      color: #FFFFFF;
+      color: var(--text-color);
       text-decoration: none;
       font-size: 12px;
       display: flex;
@@ -243,7 +284,7 @@
       filter: invert(100%);
     }
 
-    /* Rest of the CSS (Unchanged) */
+    /* Rest of the CSS (Updated for Theming) */
     .filter-buttons {
       display: flex;
       justify-content: center;
@@ -255,8 +296,8 @@
 
     .filter-button {
       flex: 0 1 auto;
-      background: #2B2F30;
-      color: #FFFFFF;
+      background: var(--container-bg);
+      color: var(--text-color);
       font-family: 'Arial', sans-serif;
       font-size: 14px;
       font-weight: normal;
@@ -271,16 +312,16 @@
     }
 
     .filter-button:hover {
-      background: #3A3F40;
+      background: var(--hover-bg);
     }
 
     .filter-button.active {
-      background: #2B2F30;
+      background: var(--container-bg);
       border-color: #0000FF;
     }
 
     .filter-button span {
-      color: #FFFFFF;
+      color: var(--text-color);
     }
 
     .event-logos {
@@ -295,7 +336,7 @@
     }
 
     .event-logo {
-      background: #2B2F30;
+      background: var(--container-bg);
       border: 1px solid #00FF00;
       border-radius: 10px;
       padding: 8px;
@@ -318,7 +359,7 @@
       display: block;
       font-size: 10px;
       margin-top: 5px;
-      color: #FFFFFF;
+      color: var(--text-color);
     }
 
     .event-logo:hover {
@@ -327,7 +368,7 @@
     }
 
     .event-logo.active {
-      background: #3A3F40;
+      background: var(--hover-bg);
       border-color: #00FF00;
       transform: scale(1.05);
       box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
@@ -344,12 +385,12 @@
     }
 
     .match-card {
-      background: linear-gradient(145deg, #2A2A2A, #1A1A1A);
+      background: linear-gradient(145deg, var(--card-bg-start), var(--card-bg-end));
       border: 1px solid #00FF00;
       border-radius: 15px;
       margin: 0 auto;
       padding: 15px;
-      color: #FFFFFF;
+      color: var(--text-color);
       width: clamp(300px, 90vw, 400px);
       cursor: pointer;
       transition: transform 0.3s, box-shadow 0.3s;
@@ -381,7 +422,7 @@
     .match-title {
       font-size: 12px;
       font-weight: normal;
-      color: #FFFFFF;
+      color: var(--text-color);
     }
 
     .teams {
@@ -402,13 +443,13 @@
       width: 60px;
       height: 60px;
       border-radius: 50%;
-      border: 2px solid #FFFFFF;
+      border: 2px solid var(--text-color);
     }
 
     .team-name {
       font-size: 14px;
       margin-top: 5px;
-      color: #FFFFFF;
+      color: var(--text-color);
     }
 
     .live-text {
@@ -495,7 +536,7 @@
     }
 
     .link-container {
-      background: #2B2F30;
+      background: var(--container-bg);
       border-radius: 15px;
       padding: 20px;
       width: clamp(250px, 80vw, 600px);
@@ -527,7 +568,7 @@
     }
 
     .link:hover {
-      background: #3A3F40;
+      background: var(--hover-bg);
       transform: translateX(5px);
     }
 
@@ -551,7 +592,7 @@
     #video-page {
       width: 800px;
       margin: 0 auto;
-      background: #2B2F30;
+      background: var(--container-bg);
       border: none;
       border-radius: 15px;
       box-shadow: 0 5px 15px rgba(0, 255, 0, 0.2);
@@ -589,8 +630,8 @@
     }
 
     .stream-link {
-      background: #2B2F30;
-      color: #FFFFFF;
+      background: var(--container-bg);
+      color: var(--text-color);
       border: 1px solid #00FF00;
       border-radius: 50px;
       padding: 8px 20px;
@@ -602,7 +643,7 @@
     }
 
     .stream-link:hover {
-      background: #3A3F40;
+      background: var(--hover-bg);
       transform: scale(1.05);
     }
 
@@ -613,7 +654,7 @@
     }
 
     .notification-tab {
-      background: #2B2F30;
+      background: var(--container-bg);
       border: 1px solid #00FF00;
       border-radius: 10px;
       padding: 10px;
@@ -860,12 +901,15 @@
       <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjM8B2NM-lmUlM6mf7WcrSLvwxboROqiVcqT6zD7B-YSU0iFCePvazGTvo&s=10" alt="Navigation Icon" class="nav-icon" onclick="toggleDrawer()">
       <span class="site-name">Vflix</span>
     </div>
+    <div class="center-section">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5wR7iE2zL7R9G8vW1z0kN9e1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r&s=10" alt="Theme Icon" class="theme-icon" id="theme-icon" onclick="toggleTheme()">
+    </div>
     <div class="right-section">
       <a href="/favorites">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4xI6150WUSJ7TaV1qCsDcEttkBkzOc6o1d40GRYD8qqdgsiQBANJkGZ0&s=10" alt="Favorite Icon" class="icon">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn9GcQ4xI6150WUSJ7TaV1qCsDcEttkBkzOc6o1d40GRYD8qqdgsiQBANJkGZ0&s=10" alt="Favorite Icon" class="icon">
       </a>
-      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4C37R6MIofy05HJzCQmRyybaptM3LDct6PYM0Vv-27i2u5qB8W0T0WKQ&s=10" alt="Reload Icon" class="icon" onclick="reloadSite()">
-      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQaHeVBjmv0LfY0mZbHY6NoH7pRLW75mBxXkvzgFeethlUF6YgawFPZZfHj&s=10" alt="Search Icon" class="icon" onclick="toggleSearch()">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn9GcR4C37R6MIofy05HJzCQmRyybaptM3LDct6PYM0Vv-27i2u5qB8W0T0WKQ&s=10" alt="Reload Icon" class="icon" onclick="reloadSite()">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn9GcQaHeVBjmv0LfY0mZbHY6NoH7pRLW75mBxXkvzgFeethlUF6YgawFPZZfHj&s=10" alt="Search Icon" class="icon" onclick="toggleSearch()">
     </div>
   </div>
 
@@ -886,7 +930,7 @@
     <input type="text" placeholder="Search events or channels..." id="search-input">
   </div>
 
-  <!-- Matches Page (Unchanged) -->
+  <!-- Matches Page -->
   <div id="matches-page">
     <div class="filter-buttons">
       <div class="filter-button active" onclick="filterMatches('all', this)">All (<span id="all-count">0</span>)</div>
@@ -921,7 +965,7 @@
     <div id="match-container"></div>
   </div>
 
-  <!-- Video Player Page (Unchanged) -->
+  <!-- Video Player Page -->
   <div id="video-page" class="hidden">
     <div class="video-player-container">
       <video id="player" class="video-js vjs-default-skin" controls preload="auto" playsinline>
@@ -939,7 +983,7 @@
     </div>
   </div>
 
-  <!-- Overlay for Stream Links (Unchanged) -->
+  <!-- Overlay for Stream Links -->
   <div class="overlay" id="overlay">
     <div class="link-container" id="link-container">
       <div class="link-title" id="link-title"></div>
@@ -974,6 +1018,26 @@
       }, 2000); // 2-second loading animation
     });
 
+    // Theme Toggle Functionality
+    function toggleTheme() {
+      const body = document.body;
+      const themeIcon = document.getElementById('theme-icon');
+      const currentTheme = body.getAttribute('data-theme');
+      if (currentTheme === 'light') {
+        body.setAttribute('data-theme', 'dark');
+        themeIcon.src = 'https://encrypted-tbn0.gstatic.com/images?q=tbn9GcT5wR7iE2zL7R9G8vW1z0kN9e1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r&s=10'; // Sun icon for dark mode
+      } else {
+        body.setAttribute('data-theme', 'light');
+        themeIcon.src = 'https://encrypted-tbn0.gstatic.com/images?q=tbn9GcS1u2v3w4x5y6z7a8b9c0d1e2f3g4h5i6j7k8l9m0n1o2p3q4r5&s=10'; // Moon icon for light mode
+      }
+    }
+
+    // Initialize Theme
+    document.addEventListener('DOMContentLoaded', () => {
+      const body = document.body;
+      body.setAttribute('data-theme', 'dark'); // Default to dark mode
+    });
+
     // Toggle Navigation Drawer
     function toggleDrawer() {
       const drawer = document.getElementById('nav-drawer');
@@ -1001,9 +1065,7 @@
     // Search Functionality (Placeholder)
     document.getElementById('search-input')?.addEventListener('input', (e) => {
       const query = e.target.value.toLowerCase();
-      // Placeholder for search logic
       console.log(`Searching for: ${query}`);
-      // You can implement search filtering here (e.g., filter matches or channels)
     });
 
     const originalMatches = [
