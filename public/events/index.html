@@ -132,7 +132,7 @@
     }
 
     [data-theme="light"] .top-bar .nav-icon {
-      filter: invert(0%); /* Original color in light mode for better contrast */
+      filter: invert(50%); /* Medium gray in light mode for better contrast */
     }
 
     .top-bar .site-name {
@@ -161,7 +161,7 @@
     }
 
     [data-theme="light"] .top-bar .theme-icon {
-      filter: invert(0%); /* Original color in light mode for better contrast */
+      filter: invert(50%); /* Medium gray in light mode for better contrast */
     }
 
     .top-bar .right-section {
@@ -181,7 +181,7 @@
     }
 
     [data-theme="light"] .top-bar .icon {
-      filter: invert(0%); /* Original color in light mode for better contrast */
+      filter: invert(50%); /* Medium gray in light mode for better contrast */
     }
 
     /* Navigation Drawer */
@@ -210,7 +210,7 @@
     }
 
     [data-theme="light"] .nav-drawer .close-btn {
-      filter: invert(0%);
+      filter: invert(50%);
     }
 
     .nav-drawer ul {
@@ -307,11 +307,11 @@
       width: 20px;
       height: 20px;
       margin-bottom: 4px;
-      filter: invert(100%);
+      filter: invert(100%); /* White in dark mode */
     }
 
     [data-theme="light"] .nav-bar .icon {
-      filter: invert(0%);
+      filter: invert(50%); /* Medium gray in light mode for better contrast */
     }
 
     /* Rest of the CSS (Updated for Theming) */
@@ -929,18 +929,18 @@
   <!-- Top Bar -->
   <div class="top-bar">
     <div class="left-section">
-      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn9GcQjM8B2NM-lmUlM6mf7WcrSLvwxboROqiVcqT6zD7B-YSU0iFCePvazGTvo&s=10" alt="Navigation Icon" class="nav-icon" onclick="toggleDrawer()">
-      <span class="site-name">Vflix</span>
+      <img src="https://via.placeholder.com/24?text=☰" alt="Navigation Icon" class="nav-icon" onclick="toggleDrawer()">
+      <span class="site-name" id="site-name">Vflix</span>
     </div>
     <div class="center-section">
-      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn9GcT5wR7iE2zL7R9G8vW1z0kN9e1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r&s=10" alt="Theme Icon" class="theme-icon" id="theme-icon" onclick="toggleTheme()">
+      <img src="https://via.placeholder.com/24?text=🌙" alt="Theme Icon" class="theme-icon" id="theme-icon" onclick="toggleTheme()">
     </div>
     <div class="right-section">
       <a href="/favorites">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn9GcQ4xI6150WUSJ7TaV1qCsDcEttkBkzOc6o1d40GRYD8qqdgsiQBANJkGZ0&s=10" alt="Favorite Icon" class="icon">
+        <img src="https://via.placeholder.com/24?text=⭐" alt="Favorite Icon" class="icon">
       </a>
-      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn9GcR4C37R6MIofy05HJzCQmRyybaptM3LDct6PYM0Vv-27i2u5qB8W0T0WKQ&s=10" alt="Reload Icon" class="icon" onclick="reloadSite()">
-      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn9GcQaHeVBjmv0LfY0mZbHY6NoH7pRLW75mBxXkvzgFeethlUF6YgawFPZZfHj&s=10" alt="Search Icon" class="icon" onclick="toggleSearch()">
+      <img src="https://via.placeholder.com/24?text=⟳" alt="Reload Icon" class="icon" onclick="reloadSite()">
+      <img src="https://via.placeholder.com/24?text=🔍" alt="Search Icon" class="icon" onclick="toggleSearch()">
     </div>
   </div>
 
@@ -1025,11 +1025,11 @@
 
   <!-- Bottom Navigation Bar -->
   <nav class="nav-bar">
-    <a href="/channels">
+    <a href="/channels" id="sports-link">
       <img src="https://via.placeholder.com/20?text=⚽" alt="Sports Icon" class="icon">
       <span>Sports</span>
     </a>
-    <a href="/events" class="active">
+    <a href="/events" id="events-link" class="active">
       <img src="https://via.placeholder.com/20?text=▶" alt="Live Events Icon" class="icon">
       <span>Live Events</span>
     </a>
@@ -1049,17 +1049,22 @@
       const currentTheme = body.getAttribute('data-theme');
       if (currentTheme === 'light') {
         body.setAttribute('data-theme', 'dark');
-        themeIcon.src = 'https://encrypted-tbn0.gstatic.com/images?q=CCRT-eFQpZW6oSCeedeyIkRyCWRTw7ntVrSRQrobMBCK0m9aKSR299mgyMcY&s=10'; // Sun icon for dark mode
+        themeIcon.src = 'https://via.placeholder.com/24?text=☀️'; // Sun icon for dark mode
+        localStorage.setItem('theme', 'dark');
       } else {
         body.setAttribute('data-theme', 'light');
-        themeIcon.src = 'https://encrypted-tbn0.gstatic.com/images?q=CCRT82qffasKegmgvFju5kT_gdZRBcMvh8EfXB50DP9wQt1-haUnIe8UqrKRN&s=10'; // Moon icon for light mode
+        themeIcon.src = 'https://via.placeholder.com/24?text=🌙'; // Moon icon for light mode
+        localStorage.setItem('theme', 'light');
       }
     }
 
     // Initialize Theme
     document.addEventListener('DOMContentLoaded', () => {
       const body = document.body;
-      body.setAttribute('data-theme', 'dark'); // Default to dark mode
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      body.setAttribute('data-theme', savedTheme);
+      const themeIcon = document.getElementById('theme-icon');
+      themeIcon.src = savedTheme === 'light' ? 'https://via.placeholder.com/24?text=🌙' : 'https://via.placeholder.com/24?text=☀️';
     });
 
     // Toggle Navigation Drawer
@@ -1090,6 +1095,12 @@
     document.getElementById('search-input')?.addEventListener('input', (e) => {
       const query = e.target.value.toLowerCase();
       console.log(`Searching for: ${query}`);
+    });
+
+    // Set Site Name
+    document.addEventListener('DOMContentLoaded', () => {
+      const siteName = document.getElementById('site-name');
+      siteName.textContent = 'Vflix';
     });
 
     const originalMatches = [
@@ -1752,4 +1763,4 @@
     });
   </script>
 </body>
-  </html>
+</html>
