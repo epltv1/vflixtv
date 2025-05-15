@@ -26,6 +26,49 @@
       padding-bottom: 60px; /* Space for bottom nav bar */
     }
 
+    /* Custom Loading Animation */
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #1C2526;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 3000;
+    }
+
+    .loader {
+      width: 50px;
+      height: 50px;
+      border: 5px solid #FFFFFF;
+      border-top: 5px solid #00FF00;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .loading-text {
+      margin-top: 20px;
+      font-size: 24px;
+      font-weight: bold;
+      color: #FFFFFF;
+      animation: pulse-text 1.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse-text {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.1); opacity: 0.7; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
     /* Top Bar */
     .top-bar {
       position: fixed;
@@ -37,21 +80,111 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0 15px;
+      padding: 0 10px;
       box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
       z-index: 1000;
     }
 
-    .top-bar .title {
+    .top-bar .left-section {
+      display: flex;
+      align-items: center;
+    }
+
+    .top-bar .nav-icon {
+      width: 24px;
+      height: 24px;
+      filter: invert(100%);
+      cursor: pointer;
+    }
+
+    .top-bar .site-name {
       font-size: 18px;
       color: #FFFFFF;
       font-weight: 600;
+      margin-left: 10px;
+    }
+
+    .top-bar .right-section {
+      display: flex;
+      align-items: center;
+      gap: 15px;
     }
 
     .top-bar .icon {
       width: 24px;
       height: 24px;
       filter: invert(100%);
+      cursor: pointer;
+    }
+
+    /* Navigation Drawer */
+    .nav-drawer {
+      position: fixed;
+      top: 0;
+      left: -250px; /* Hidden by default */
+      width: 250px;
+      height: 100%;
+      background-color: #2B2F30;
+      box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+      z-index: 2000;
+      transition: left 0.3s ease;
+    }
+
+    .nav-drawer.open {
+      left: 0;
+    }
+
+    .nav-drawer .close-btn {
+      width: 24px;
+      height: 24px;
+      filter: invert(100%);
+      cursor: pointer;
+      margin: 15px;
+    }
+
+    .nav-drawer ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .nav-drawer ul li {
+      padding: 15px 20px;
+      color: #FFFFFF;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .nav-drawer ul li:hover {
+      background-color: #3A3F40;
+    }
+
+    /* Search Bar */
+    .search-container {
+      position: fixed;
+      top: 50px;
+      left: 0;
+      width: 100%;
+      background-color: #2B2F30;
+      padding: 10px;
+      display: none;
+      z-index: 1000;
+    }
+
+    .search-container.active {
+      display: block;
+    }
+
+    .search-container input {
+      width: 100%;
+      padding: 8px;
+      font-size: 16px;
+      border: 1px solid #00FF00;
+      border-radius: 5px;
+      background-color: #1A1A1A;
+      color: #FFFFFF;
+      outline: none;
     }
 
     /* Bottom Navigation Bar */
@@ -106,7 +239,7 @@
       filter: invert(100%);
     }
 
-    /* Filter Buttons */
+    /* Rest of the CSS (Unchanged) */
     .filter-buttons {
       display: flex;
       justify-content: center;
@@ -146,7 +279,6 @@
       color: #FFFFFF;
     }
 
-    /* Event Logos */
     .event-logos {
       display: flex;
       justify-content: center;
@@ -197,7 +329,6 @@
       box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
     }
 
-    /* Match Container */
     #match-container {
       position: relative;
       flex: 1;
@@ -208,7 +339,6 @@
       padding: 15px;
     }
 
-    /* Updated Match Card Styles */
     .match-card {
       background: linear-gradient(145deg, #2A2A2A, #1A1A1A);
       border: 1px solid #00FF00;
@@ -265,10 +395,10 @@
     }
 
     .team img {
-      width: 60px; /* Larger logos */
+      width: 60px;
       height: 60px;
       border-radius: 50%;
-      border: 2px solid #FFFFFF; /* White border for logos */
+      border: 2px solid #FFFFFF;
     }
 
     .team-name {
@@ -326,7 +456,7 @@
 
     .timer {
       font-size: 14px;
-      color: #00FF00; /* Green timer */
+      color: #00FF00;
       text-align: center;
       margin-top: 10px;
       font-weight: normal;
@@ -345,7 +475,6 @@
       display: none;
     }
 
-    /* Overlay for Stream Links */
     .overlay {
       position: fixed;
       top: 0;
@@ -415,7 +544,6 @@
       transform: scale(1.05);
     }
 
-    /* Video Page */
     #video-page {
       width: 800px;
       margin: 0 auto;
@@ -480,7 +608,6 @@
       border-color: #00FF00;
     }
 
-    /* Notification Tab */
     .notification-tab {
       background: #2B2F30;
       border: 1px solid #00FF00;
@@ -511,7 +638,6 @@
       }
     }
 
-    /* Suggested Games */
     .suggested-games {
       margin: 20px 0;
       width: 100%;
@@ -548,7 +674,6 @@
       color: #FFD700;
     }
 
-    /* Responsive Design */
     @media (max-width: 850px) {
       #video-page {
         width: 90%;
@@ -719,14 +844,45 @@
   </style>
 </head>
 <body>
-  <!-- Top Bar -->
-  <div class="top-bar">
-    <img src="https://via.placeholder.com/24?text=←" alt="Back Icon" class="icon">
-    <span class="title">Live Events</span>
-    <img src="https://via.placeholder.com/24?text=☰" alt="Menu Icon" class="icon">
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" id="loading-overlay">
+    <div class="loader"></div>
+    <div class="loading-text">Vflix</div>
   </div>
 
-  <!-- Matches Page -->
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <div class="left-section">
+      <img src="https://via.placeholder.com/24?text=☰" alt="Navigation Icon" class="nav-icon" onclick="toggleDrawer()">
+      <span class="site-name">Vflix</span>
+    </div>
+    <div class="right-section">
+      <a href="/favorites">
+        <img src="https://via.placeholder.com/24?text=♥" alt="Favorite Icon" class="icon">
+      </a>
+      <img src="https://via.placeholder.com/24?text=↻" alt="Reload Icon" class="icon" onclick="reloadSite()">
+      <img src="https://via.placeholder.com/24?text=🔍" alt="Search Icon" class="icon" onclick="toggleSearch()">
+    </div>
+  </div>
+
+  <!-- Navigation Drawer -->
+  <div class="nav-drawer" id="nav-drawer">
+    <img src="https://via.placeholder.com/24?text=✖" alt="Close Icon" class="close-btn" onclick="toggleDrawer()">
+    <ul>
+      <li>Home</li>
+      <li>Events</li>
+      <li>Channels</li>
+      <li>Sports</li>
+      <li>Favorites</li>
+    </ul>
+  </div>
+
+  <!-- Search Bar -->
+  <div class="search-container" id="search-container">
+    <input type="text" placeholder="Search events or channels..." id="search-input">
+  </div>
+
+  <!-- Matches Page (Unchanged) -->
   <div id="matches-page">
     <div class="filter-buttons">
       <div class="filter-button active" onclick="filterMatches('all', this)">All (<span id="all-count">0</span>)</div>
@@ -745,11 +901,11 @@
         <span>Cricket</span>
       </div>
       <div class="event-logo" onclick="filterByCategory('Basketball', this)">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT14jQL8z5yq625bG_7sC4_CH3XVLUItJctX9HY3ab1VeeE-aZW6eRy-rU3&s=10" alt="NBA">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=CCRT82qffasKegmgvFju5kT_gdZRBcMvh8EfXB50DP9wQt1-haUnIe8UqrKRN&s=10" alt="NBA">
         <span>NBA</span>
       </div>
       <div class="event-logo" onclick="filterByCategory('Fight', this)">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTvntP7goBM-0eKtAx7l2GXhYVqueLCIJxAVqzAwQGMuBC6Pwe_Nq6SsXs&s=10" alt="Fight">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=CCRT82qffasKegmgvFju5kT_gdZRBcMvh8EfXB50DP9wQt1-haUnIe8UqrKRN&s=10" alt="Fight">
         <span>Fight</span>
       </div>
       <div class="event-logo" onclick="filterByCategory('Motorsports', this)">
@@ -761,7 +917,7 @@
     <div id="match-container"></div>
   </div>
 
-  <!-- Video Player Page -->
+  <!-- Video Player Page (Unchanged) -->
   <div id="video-page" class="hidden">
     <div class="video-player-container">
       <video id="player" class="video-js vjs-default-skin" controls preload="auto" playsinline>
@@ -779,7 +935,7 @@
     </div>
   </div>
 
-  <!-- Overlay for Stream Links -->
+  <!-- Overlay for Stream Links (Unchanged) -->
   <div class="overlay" id="overlay">
     <div class="link-container" id="link-container">
       <div class="link-title" id="link-title"></div>
@@ -790,25 +946,62 @@
 
   <!-- Bottom Navigation Bar -->
   <nav class="nav-bar">
-    <a href="/events" class="active">
-      <img src="https://via.placeholder.com/20?text=🎥" alt="Events Icon" class="icon">
-      <span>Events</span>
+    <a href="/sports" class="">
+      <img src="https://via.placeholder.com/20?text=⚽" alt="Sports Icon" class="icon">
+      <span>Sports</span>
     </a>
-    <a href="/channels" class="">
-      <img src="https://via.placeholder.com/20?text=📺" alt="Channels Icon" class="icon">
-      <span>Channels</span>
+    <a href="/events" class="active">
+      <img src="https://via.placeholder.com/20?text=▶" alt="Live Events Icon" class="icon">
+      <span>Live Events</span>
     </a>
   </nav>
 
-  <!-- Video.js and Plugins -->
+  <!-- Scripts -->
   <script src="https://vjs.zencdn.net/8.6.1/video.min.js"></script>
   <script src="https://unpkg.com/videojs-contrib-hls@5.15.0/dist/videojs-contrib-hls.min.js"></script>
   <script src="https://unpkg.com/videojs-http-source-selector@1.1.6/dist/videojs-http-source-selector.min.js"></script>
-  <!-- Chromecast SDK -->
   <script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
-  <!-- Video.js Chromecast Plugin -->
   <script src="https://unpkg.com/videojs-chromecast@2.1.0/dist/videojs-chromecast.min.js"></script>
   <script>
+    // Show loading animation on page load
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        document.getElementById('loading-overlay').style.display = 'none';
+      }, 2000); // 2-second loading animation
+    });
+
+    // Toggle Navigation Drawer
+    function toggleDrawer() {
+      const drawer = document.getElementById('nav-drawer');
+      drawer.classList.toggle('open');
+    }
+
+    // Reload Site with Loading Animation
+    function reloadSite() {
+      const loadingOverlay = document.getElementById('loading-overlay');
+      loadingOverlay.style.display = 'flex';
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000); // 2-second loading animation before reload
+    }
+
+    // Toggle Search Bar
+    function toggleSearch() {
+      const searchContainer = document.getElementById('search-container');
+      searchContainer.classList.toggle('active');
+      if (searchContainer.classList.contains('active')) {
+        document.getElementById('search-input').focus();
+      }
+    }
+
+    // Search Functionality (Placeholder)
+    document.getElementById('search-input')?.addEventListener('input', (e) => {
+      const query = e.target.value.toLowerCase();
+      // Placeholder for search logic
+      console.log(`Searching for: ${query}`);
+      // You can implement search filtering here (e.g., filter matches or channels)
+    });
+
     const originalMatches = [
       {
         id: "match-1",
@@ -928,10 +1121,9 @@
     let currentMatch = null;
     let currentStreamTitle = null;
     let streamTimeoutId = null;
-    const STREAM_TIMEOUT = 15000; // 15 seconds timeout
-    let failedStreams = new Set(); // Track failed streams to prevent infinite loops
+    const STREAM_TIMEOUT = 15000;
+    let failedStreams = new Set();
 
-    // Initialize Video.js player with Chromecast support
     function initializePlayer() {
       if (player && !player.isDisposed()) {
         player.dispose();
@@ -1153,7 +1345,6 @@
       const seconds = String(Math.floor((ms % (1000 * 60)) / 1000)).padStart(2, '0');
 
       if (now < ms) {
-        // Upcoming match (ms is startTime)
         if (weeks > 0) {
           return `Starts in ${weeks} week${weeks > 1 ? 's' : ''}`;
         } else if (days > 0) {
@@ -1164,7 +1355,6 @@
           return `${minutes}:${seconds}`;
         }
       } else {
-        // Live match (ms is time elapsed since startTime)
         const totalMinutes = Math.floor(ms / (1000 * 60));
         const displayMinutes = totalMinutes % 60;
         const displayHours = Math.floor(totalMinutes / 60);
@@ -1189,7 +1379,7 @@
           datetimeElement.classList.remove("hidden");
         } else if (now >= match.startTime && now <= match.endTime) {
           const elapsed = now - match.startTime;
-          timerElement.textContent = formatTime(elapsed); // Show elapsed time for live matches
+          timerElement.textContent = formatTime(elapsed);
           liveElement.classList.remove("hidden");
           datetimeElement.classList.add("hidden");
         } else {
