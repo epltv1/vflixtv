@@ -15,7 +15,7 @@
     :root {
       --background-color: #1C2526; /* Dark mode background */
       --text-color: #FFFFFF; /* Dark mode text */
-      --top-bar-bg: #1A1A1A; /* Dark mode top bar */
+      --top-bar-bg: #333333; /* Dark mode top bar - medium gray for better contrast */
       --card-bg-start: #2A2A2A; /* Dark mode card gradient start */
       --card-bg-end: #1A1A1A; /* Dark mode card gradient end */
       --container-bg: #2B2F30; /* Dark mode container */
@@ -26,7 +26,7 @@
     [data-theme="light"] {
       --background-color: #FFFFFF; /* Light mode background */
       --text-color: #000000; /* Light mode text */
-      --top-bar-bg: #F0F0F0; /* Light mode top bar */
+      --top-bar-bg: #CCCCCC; /* Light mode top bar - slightly darker gray for contrast */
       --card-bg-start: #E0E0E0; /* Light mode card gradient start */
       --card-bg-end: #D0D0D0; /* Light mode card gradient end */
       --container-bg: #E5E5E5; /* Light mode container */
@@ -118,7 +118,11 @@
       cursor: pointer;
       background: none;
       background-color: transparent;
-      filter: invert(100%);
+      filter: invert(100%); /* White in dark mode */
+    }
+
+    [data-theme="light"] .top-bar .nav-icon {
+      filter: invert(0%); /* Original color in light mode for better contrast */
     }
 
     .top-bar .site-name {
@@ -143,7 +147,11 @@
       cursor: pointer;
       background: none;
       background-color: transparent;
-      filter: invert(100%);
+      filter: invert(100%); /* White in dark mode */
+    }
+
+    [data-theme="light"] .top-bar .theme-icon {
+      filter: invert(0%); /* Original color in light mode for better contrast */
     }
 
     .top-bar .right-section {
@@ -159,7 +167,11 @@
       cursor: pointer;
       background: none;
       background-color: transparent;
-      filter: invert(100%);
+      filter: invert(100%); /* White in dark mode */
+    }
+
+    [data-theme="light"] .top-bar .icon {
+      filter: invert(0%); /* Original color in light mode for better contrast */
     }
 
     /* Navigation Drawer */
@@ -185,6 +197,10 @@
       filter: invert(100%);
       cursor: pointer;
       margin: 15px;
+    }
+
+    [data-theme="light"] .nav-drawer .close-btn {
+      filter: invert(0%);
     }
 
     .nav-drawer ul {
@@ -282,6 +298,10 @@
       height: 20px;
       margin-bottom: 4px;
       filter: invert(100%);
+    }
+
+    [data-theme="light"] .nav-bar .icon {
+      filter: invert(0%);
     }
 
     /* Rest of the CSS (Updated for Theming) */
@@ -898,11 +918,11 @@
   <!-- Top Bar -->
   <div class="top-bar">
     <div class="left-section">
-      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjM8B2NM-lmUlM6mf7WcrSLvwxboROqiVcqT6zD7B-YSU0iFCePvazGTvo&s=10" alt="Navigation Icon" class="nav-icon" onclick="toggleDrawer()">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn9GcQjM8B2NM-lmUlM6mf7WcrSLvwxboROqiVcqT6zD7B-YSU0iFCePvazGTvo&s=10" alt="Navigation Icon" class="nav-icon" onclick="toggleDrawer()">
       <span class="site-name">Vflix</span>
     </div>
     <div class="center-section">
-      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5wR7iE2zL7R9G8vW1z0kN9e1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r&s=10" alt="Theme Icon" class="theme-icon" id="theme-icon" onclick="toggleTheme()">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn9GcT5wR7iE2zL7R9G8vW1z0kN9e1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r&s=10" alt="Theme Icon" class="theme-icon" id="theme-icon" onclick="toggleTheme()">
     </div>
     <div class="right-section">
       <a href="/favorites">
@@ -1040,7 +1060,7 @@
 
     // Toggle Navigation Drawer
     function toggleDrawer() {
-      const drawer = document.getElementById('nav-drawer');
+      const drawer = document.getElementById('navstates: normal;
       drawer.classList.toggle('open');
     }
 
