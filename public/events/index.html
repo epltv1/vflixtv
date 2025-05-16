@@ -22,17 +22,6 @@
       --hover-bg: #3A3F40; /* Dark mode hover */
     }
 
-    /* Light Mode */
-    [data-theme="light"] {
-      --background-color: #FFFFFF; /* Light mode background */
-      --text-color: #000000; /* Light mode text */
-      --top-bar-bg: #CCCCCC; /* Light mode top bar - slightly darker gray for contrast */
-      --card-bg-start: #E0E0E0; /* Light mode card gradient start */
-      --card-bg-end: #D0D0D0; /* Light mode card gradient end */
-      --container-bg: #E5E5E5; /* Light mode container */
-      --hover-bg: #D5D5D5; /* Light mode hover */
-    }
-
     body {
       background: var(--background-color);
       color: var(--text-color);
@@ -110,7 +99,7 @@
       height: 50px;
       background-color: var(--top-bar-bg);
       display: flex;
-      justify-content: space-between;
+      justify-content: flex-start;
       align-items: center;
       padding: 0 10px;
       box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
@@ -131,57 +120,11 @@
       filter: invert(100%); /* White in dark mode */
     }
 
-    [data-theme="light"] .top-bar .nav-icon {
-      filter: invert(50%); /* Medium gray in light mode for better contrast */
-    }
-
     .top-bar .site-name {
       font-size: 18px;
       color: var(--text-color);
       font-weight: 600;
       margin-left: 10px;
-    }
-
-    /* Center Section for Theme Icon */
-    .top-bar .center-section {
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      align-items: center;
-    }
-
-    .top-bar .theme-icon {
-      width: 24px;
-      height: 24px;
-      cursor: pointer;
-      background: none;
-      background-color: transparent;
-      filter: invert(100%); /* White in dark mode */
-    }
-
-    [data-theme="light"] .top-bar .theme-icon {
-      filter: invert(50%); /* Medium gray in light mode for better contrast */
-    }
-
-    .top-bar .right-section {
-      display: flex;
-      align-items: center;
-      gap: clamp(15px, 2vw, 20px); /* Responsive spacing */
-      padding-right: 15px; /* Shift icons to the left */
-    }
-
-    .top-bar .icon {
-      width: 24px;
-      height: 24px;
-      cursor: pointer;
-      background: none;
-      background-color: transparent;
-      filter: invert(100%); /* White in dark mode */
-    }
-
-    [data-theme="light"] .top-bar .icon {
-      filter: invert(50%); /* Medium gray in light mode for better contrast */
     }
 
     /* Navigation Drawer */
@@ -209,10 +152,6 @@
       margin: 15px;
     }
 
-    [data-theme="light"] .nav-drawer .close-btn {
-      filter: invert(50%);
-    }
-
     .nav-drawer ul {
       list-style: none;
       padding: 0;
@@ -229,33 +168,6 @@
 
     .nav-drawer ul li:hover {
       background-color: var(--hover-bg);
-    }
-
-    /* Search Bar */
-    .search-container {
-      position: fixed;
-      top: 50px;
-      left: 0;
-      width: 100%;
-      background-color: var(--container-bg);
-      padding: 10px;
-      display: none;
-      z-index: 1000;
-    }
-
-    .search-container.active {
-      display: block;
-    }
-
-    .search-container input {
-      width: 100%;
-      padding: 8px;
-      font-size: 16px;
-      border: 1px solid #00FF00;
-      border-radius: 5px;
-      background-color: var(--top-bar-bg);
-      color: var(--text-color);
-      outline: none;
     }
 
     /* Bottom Navigation Bar */
@@ -310,11 +222,7 @@
       filter: invert(100%); /* White in dark mode */
     }
 
-    [data-theme="light"] .nav-bar .icon {
-      filter: invert(50%); /* Medium gray in light mode for better contrast */
-    }
-
-    /* Rest of the CSS (Updated for Theming) */
+    /* Rest of the CSS */
     .filter-buttons {
       display: flex;
       justify-content: center;
@@ -932,16 +840,6 @@
       <img src="https://via.placeholder.com/24?text=☰" alt="Navigation Icon" class="nav-icon" onclick="toggleDrawer()">
       <span class="site-name" id="site-name">Vflix</span>
     </div>
-    <div class="center-section">
-      <img src="https://via.placeholder.com/24?text=🌙" alt="Theme Icon" class="theme-icon" id="theme-icon" onclick="toggleTheme()">
-    </div>
-    <div class="right-section">
-      <a href="/favorites">
-        <img src="https://via.placeholder.com/24?text=⭐" alt="Favorite Icon" class="icon">
-      </a>
-      <img src="https://via.placeholder.com/24?text=⟳" alt="Reload Icon" class="icon" onclick="reloadSite()">
-      <img src="https://via.placeholder.com/24?text=🔍" alt="Search Icon" class="icon" onclick="toggleSearch()">
-    </div>
   </div>
 
   <!-- Navigation Drawer -->
@@ -954,11 +852,6 @@
       <li>Sports</li>
       <li>Favorites</li>
     </ul>
-  </div>
-
-  <!-- Search Bar -->
-  <div class="search-container" id="search-container">
-    <input type="text" placeholder="Search events or channels..." id="search-input">
   </div>
 
   <!-- Matches Page -->
@@ -1042,60 +935,11 @@
   <script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
   <script src="https://unpkg.com/videojs-chromecast@2.1.0/dist/videojs-chromecast.min.js"></script>
   <script>
-    // Theme Toggle Functionality
-    function toggleTheme() {
-      const body = document.body;
-      const themeIcon = document.getElementById('theme-icon');
-      const currentTheme = body.getAttribute('data-theme');
-      if (currentTheme === 'light') {
-        body.setAttribute('data-theme', 'dark');
-        themeIcon.src = 'https://via.placeholder.com/24?text=☀️'; // Sun icon for dark mode
-        localStorage.setItem('theme', 'dark');
-      } else {
-        body.setAttribute('data-theme', 'light');
-        themeIcon.src = 'https://via.placeholder.com/24?text=🌙'; // Moon icon for light mode
-        localStorage.setItem('theme', 'light');
-      }
-    }
-
-    // Initialize Theme
-    document.addEventListener('DOMContentLoaded', () => {
-      const body = document.body;
-      const savedTheme = localStorage.getItem('theme') || 'dark';
-      body.setAttribute('data-theme', savedTheme);
-      const themeIcon = document.getElementById('theme-icon');
-      themeIcon.src = savedTheme === 'light' ? 'https://via.placeholder.com/24?text=🌙' : 'https://via.placeholder.com/24?text=☀️';
-    });
-
     // Toggle Navigation Drawer
     function toggleDrawer() {
       const drawer = document.getElementById('nav-drawer');
       drawer.classList.toggle('open');
     }
-
-    // Reload Site with Loading Animation
-    function reloadSite() {
-      const loadingOverlay = document.getElementById('loading-overlay');
-      loadingOverlay.style.display = 'flex';
-      setTimeout(() => {
-        window.location.reload();
-      }, 2000); // 2-second loading animation before reload
-    }
-
-    // Toggle Search Bar
-    function toggleSearch() {
-      const searchContainer = document.getElementById('search-container');
-      searchContainer.classList.toggle('active');
-      if (searchContainer.classList.contains('active')) {
-        document.getElementById('search-input').focus();
-      }
-    }
-
-    // Search Functionality (Placeholder)
-    document.getElementById('search-input')?.addEventListener('input', (e) => {
-      const query = e.target.value.toLowerCase();
-      console.log(`Searching for: ${query}`);
-    });
 
     // Set Site Name
     document.addEventListener('DOMContentLoaded', () => {
