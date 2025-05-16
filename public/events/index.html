@@ -916,17 +916,19 @@
   <script src="https://unpkg.com/videojs-contrib-quality-levels@4.1.0/dist/videojs-contrib-quality-levels.min.js"></script>
   <script src="https://unpkg.com/videojs-http-source-selector@1.1.6/dist/videojs-http-source-selector.min.js"></script>
   <script src="https://unpkg.com/videojs-pip@0.2.0/dist/videojs-pip.min.js"></script>
-  <script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
   <script src="https://unpkg.com/videojs-chromecast@2.1.0/dist/videojs-chromecast.min.js"></script>
+  <script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
   <script>
     // Toggle Navigation Drawer
     function toggleDrawer() {
+      console.log('Toggling navigation drawer');
       const drawer = document.getElementById('nav-drawer');
       drawer.classList.toggle('open');
     }
 
     // Set Site Name
     document.addEventListener('DOMContentLoaded', () => {
+      console.log('Setting site name');
       const siteName = document.getElementById('site-name');
       siteName.textContent = 'Vflix';
     });
@@ -942,92 +944,103 @@
     const STREAM_TIMEOUT = 15000;
     let failedStreams = new Set();
 
-    // Fetch events from events.json
-    async function loadEvents() {
-      const loadingOverlay = document.getElementById('loading-overlay');
-      const errorMessage = document.getElementById('error-message');
-      try {
-        const response = await fetch('./events.json', { cache: 'no-store' });
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status} (${response.statusText})`);
-        }
-        const data = await response.json();
-        matches = data.map(match => ({
-          ...match,
-          startTime: new Date(match.startTime).getTime(),
-          endTime: new Date(match.endTime).getTime()
-        }));
-        originalMatches = [...matches];
-        renderMatches(matches);
-        updateCounts();
-        updateTimers();
-        loadingOverlay.style.display = 'none';
-        errorMessage.style.display = 'none';
-      } catch (error) {
-        console.error('Error loading events:', error.message);
-        loadingOverlay.style.display = 'none';
-        errorMessage.textContent = `Failed to load events: ${error.message}. Check if events.json exists in public/events/ and is valid JSON.`;
-        errorMessage.style.display = 'block';
-        renderMatches([]); // Fallback to empty state
+    // Fallback matches if events.json fails
+    const fallbackMatches = [
+      {
+        id: 'fallback-1',
+        category: 'Cricket',
+        title: 'Cricket | Fallback Match',
+        leagueLogo: 'https://via.placeholder.com/20?text=🏆',
+        teamA: { name: 'Team A', logo: 'https://via.placeholder.com/60?text=⚽' },
+        teamB: { name: 'Team B', logo: 'https://via.placeholder.com/60?text=⚽' },
+        startTime: new Date().getTime(),
+        endTime: new Date().getTime() + 2 * 60 * 60 * 1000,
+        links: [
+          { title: 'Test Stream', url: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8' }
+        ]
       }
-    }
+    ];
 
+    // Initialize Video.js player
     function initializePlayer() {
-      if (player && !player.isDisposed()) {
-        player.dispose();
-      }
+      console.log('Initializing Video.js player');
+      try {
+        if (player && !player.isDisposed()) {
+          player.dispose();
+        }
 
-      player = videojs('player', {
-        controls: true,
-        autoplay: false,
-        preload: 'auto',
-        fluid: true,
-        aspectRatio: '16:9',
-        playbackRates: [0.5, 1, 1.5, 2],
-        html5: {
-          vhs: {
-            overrideNative: true // Ensure consistent HLS playback
+        player = videojs('player', {
+          controls: true,
+          autoplay: false,
+          preload: 'auto',
+          fluid: true,
+          aspectRatio: '16:9',
+          playbackRates: [0.5, 1, 1.5, 2],
+          html5: {
+            vhs: {
+              overrideNative: true // Ensure consistent HLS playback
+            }
           }
-        },
-        plugins: {
-          httpSourceSelector: { default: 'auto' }
-        }
-      });
-
-      // Enable Quality Selector
-      player.httpSourceSelector();
-
-      // Enable PiP Button
-      player.pip();
-
-      // Enable Chromecast
-      if (window.chrome && window.chrome.cast) {
-        player.chromecast({
-          appId: chrome.cast.media.DEFAULT_MEDIA_RECEIVER_APP_ID
         });
+
+        // Initialize plugins safely
+        try {
+          if (typeof player.httpSourceSelector === 'function') {
+            player.httpSourceSelector({ default: 'auto' });
+          } else {
+            console.warn('httpSourceSelector plugin not available');
+          }
+        } catch (e) {
+          console.error('Error initializing httpSourceSelector:', e);
+        }
+
+        try {
+          if (typeof player.pip === 'function') {
+            player.pip();
+          } else {
+            console.warn('PiP plugin not available');
+          }
+        } catch (e) {
+          console.error('Error initializing PiP:', e);
+        }
+
+        try {
+          if (window.chrome && window.chrome.cast && typeof player.chromecast === 'function') {
+            player.chromecast({
+              appId: chrome.cast.media.DEFAULT_MEDIA_RECEIVER_APP_ID
+            });
+          } else {
+            console.warn('Chromecast not available');
+          }
+        } catch (e) {
+          console.error('Error initializing Chromecast:', e);
+        }
+
+        player.on('error', () => {
+          console.error('Stream error detected:', player.error());
+          switchToNextStream();
+        });
+
+        player.on('loadedmetadata', () => {
+          if (streamTimeoutId) {
+            clearTimeout(streamTimeoutId);
+            streamTimeoutId = null;
+          }
+        });
+
+        player.on('play', () => {
+          if (streamTimeoutId) {
+            clearTimeout(streamTimeoutId);
+            streamTimeoutId = null;
+          }
+        });
+      } catch (e) {
+        console.error('Error in initializePlayer:', e);
       }
-
-      player.on('error', () => {
-        console.error('Stream error detected:', player.error());
-        switchToNextStream();
-      });
-
-      player.on('loadedmetadata', () => {
-        if (streamTimeoutId) {
-          clearTimeout(streamTimeoutId);
-          streamTimeoutId = null;
-        }
-      });
-
-      player.on('play', () => {
-        if (streamTimeoutId) {
-          clearTimeout(streamTimeoutId);
-          streamTimeoutId = null;
-        }
-      });
     }
 
     window['__onGCastApiAvailable'] = (isAvailable) => {
+      console.log('Chromecast API available:', isAvailable);
       if (isAvailable) {
         try {
           cast.framework.CastContext.getInstance().setOptions({
@@ -1037,12 +1050,12 @@
         } catch (err) {
           console.error('Failed to initialize Chromecast:', err);
         }
-      } else {
-        console.warn('Chromecast API not available');
       }
     };
 
+    // Load stream from events.json
     function loadStream(streamUrl, streamTitle) {
+      console.log('Loading stream:', streamTitle, streamUrl);
       if (!player || player.isDisposed()) {
         initializePlayer();
       }
@@ -1067,7 +1080,7 @@
         clearTimeout(streamTimeoutId);
       }
       streamTimeoutId = setTimeout(() => {
-        console.log(`Stream "${streamTitle}" failed to load within 15 seconds, switching to next stream`);
+        console.log(`Stream "${streamTitle}" failed to load within 15 seconds`);
         switchToNextStream();
       }, STREAM_TIMEOUT);
 
@@ -1077,6 +1090,7 @@
     }
 
     function switchToNextStream() {
+      console.log('Switching to next stream');
       if (!currentMatch || !currentMatch.links || currentMatch.links.length <= 1) {
         player.el().innerHTML = '<p style="color: #FFD700; text-align: center;">No more streams available for this match.</p>';
         if (streamTimeoutId) {
@@ -1101,7 +1115,7 @@
         attempts++;
       }
 
-      player.el().innerHTML = '<p style="color: #FFD700; text-align: center;">All streams failed to load. Please try another match.</p>';
+      player.el().innerHTML = '<p style="color: #FFD700; text-align: center;">All streams failed to load.</p>';
       if (streamTimeoutId) {
         clearTimeout(streamTimeoutId);
         streamTimeoutId = null;
@@ -1109,7 +1123,66 @@
       failedStreams.clear();
     }
 
+    // Fetch events from events.json
+    async function loadEvents() {
+      const loadingOverlay = document.getElementById('loading-overlay');
+      const errorMessage = document.getElementById('error-message');
+      console.log('Starting loadEvents');
+
+      // Timeout to prevent infinite loading
+      const fetchTimeout = setTimeout(() => {
+        console.warn('Fetch timeout after 10 seconds');
+        loadingOverlay.style.display = 'none';
+        errorMessage.textContent = 'Failed to load events: Request timed out';
+        errorMessage.style.display = 'block';
+        matches = fallbackMatches;
+        originalMatches = [...matches];
+        renderMatches(matches);
+        updateCounts();
+        updateTimers();
+      }, 10000);
+
+      try {
+        console.log('Fetching events.json');
+        const response = await fetch('./events.json', { cache: 'no-store' });
+        console.log('Fetch response:', response.status, response.statusText);
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status} (${response.statusText})`);
+        }
+        const data = await response.json();
+        console.log('Data loaded:', data);
+        matches = data.map(match => ({
+          ...match,
+          startTime: new Date(match.startTime).getTime(),
+          endTime: new Date(match.endTime).getTime()
+        }));
+        originalMatches = [...matches];
+        console.log('Rendering matches:', matches.length);
+        renderMatches(matches);
+        console.log('Updating counts');
+        updateCounts();
+        console.log('Starting timers');
+        updateTimers();
+        console.log('Hiding loading overlay');
+        loadingOverlay.style.display = 'none';
+        errorMessage.style.display = 'none';
+        clearTimeout(fetchTimeout);
+      } catch (error) {
+        console.error('Error loading events:', error.message);
+        loadingOverlay.style.display = 'none';
+        errorMessage.textContent = `Failed to load events: ${error.message}`;
+        errorMessage.style.display = 'block';
+        matches = fallbackMatches;
+        originalMatches = [...matches];
+        renderMatches(matches);
+        updateCounts();
+        updateTimers();
+        clearTimeout(fetchTimeout);
+      }
+    }
+
     function renderMatches(filteredMatches) {
+      console.log('Rendering matches:', filteredMatches.length);
       const container = document.getElementById("match-container");
       const loadingOverlay = document.getElementById('loading-overlay');
       const errorMessage = document.getElementById('error-message');
@@ -1246,6 +1319,7 @@
     }
 
     function updateCounts() {
+      console.log('Updating counts');
       const now = Date.now();
       const allCount = matches.length;
       const liveCount = matches.filter(m => now >= m.startTime && now <= m.endTime).length;
@@ -1259,6 +1333,7 @@
     }
 
     function openOverlay(match) {
+      console.log('Opening overlay for match:', match.title);
       currentMatch = match;
       const linkContainer = document.getElementById("dynamic-links");
       document.getElementById("link-title").textContent = match.title;
@@ -1282,10 +1357,12 @@
     }
 
     function closeOverlay() {
+      console.log('Closing overlay');
       document.getElementById("overlay").style.display = "none";
     }
 
     function showVideoPage(title, streamUrl, streamTitle) {
+      console.log('Showing video page:', title);
       document.getElementById("matches-page").classList.add("hidden");
       document.getElementById("video-page").classList.remove("hidden");
 
@@ -1313,6 +1390,7 @@
     }
 
     function showMatchesPage() {
+      console.log('Showing matches page');
       document.getElementById("video-page").classList.add("hidden");
       document.getElementById("matches-page").classList.remove("hidden");
 
@@ -1330,6 +1408,7 @@
     }
 
     window.addEventListener('popstate', (event) => {
+      console.log('Popstate event:', event.state);
       if (event.state && event.state.page === 'video') {
         showMatchesPage();
       } else {
@@ -1338,6 +1417,7 @@
     });
 
     function renderSuggestedMatches(currentTitle) {
+      console.log('Rendering suggested matches for:', currentTitle);
       const suggestedContainer = document.getElementById("suggested-matches");
       suggestedContainer.innerHTML = '';
 
@@ -1440,6 +1520,7 @@
     }
 
     function filterMatches(filter, button) {
+      console.log('Filtering matches:', filter);
       document.querySelectorAll(".filter-button").forEach(btn => btn.classList.remove("active"));
       button.classList.add("active");
       currentFilter = filter;
@@ -1456,6 +1537,7 @@
     }
 
     function filterByCategory(category, button) {
+      console.log('Filtering by category:', category);
       document.querySelectorAll(".event-logo").forEach(btn => btn.classList.remove("active"));
       button.classList.add("active");
       currentCategory = category;
@@ -1472,8 +1554,19 @@
       renderMatches(filteredMatches);
     }
 
+    // Ensure scripts are loaded before initializing
     document.addEventListener('DOMContentLoaded', () => {
-      initializePlayer();
+      console.log('DOM loaded, initializing player and loading events');
+      try {
+        if (typeof videojs === 'undefined') {
+          console.error('Video.js not loaded');
+          // Proceed without player initialization
+        } else {
+          initializePlayer();
+        }
+      } catch (e) {
+        console.error('Error during player initialization:', e);
+      }
       history.pushState({ page: 'matches' }, '', '#matches');
       loadEvents();
     });
