@@ -964,7 +964,9 @@
       const errorMessage = document.getElementById('error-message');
       try {
         const response = await fetch('./events.json');
-        if (!response.ok) throw new Error('Failed to fetch events');
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
         const data = await response.json();
         matches = data.map(match => ({
           ...match,
@@ -975,10 +977,14 @@
         renderMatches(matches);
         updateCounts();
         updateTimers();
-      } catch (error) {
-        console.error('Error loading events:', error);
         loadingOverlay.style.display = 'none';
+      } catch (error) {
+        console.error('Error loading events:', error.message);
+        loadingOverlay.style.display = 'none';
+        errorMessage.textContent = `Failed to load events: ${error.message}. Please check if events.json exists and is valid.`;
         errorMessage.style.display = 'block';
+        // Fallback: Render empty state
+        renderMatches([]);
       }
     }
 
