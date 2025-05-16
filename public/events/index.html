@@ -5,21 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Livestream Events</title>
   <!-- Video.js CSS -->
-  <link href="https://vjs.zencdn.net/8.6.1/video-js.css" rel="stylesheet" />
+  <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
   <!-- Video.js HTTP Source Selector CSS -->
   <link href="https://unpkg.com/videojs-http-source-selector@1.1.6/dist/videojs-http-source-selector.css" rel="stylesheet" />
   <!-- Chromecast Receiver CSS -->
   <link href="https://unpkg.com/videojs-chromecast@2.1.0/dist/videojs-chromecast.css" rel="stylesheet" />
   <style>
-    /* Define CSS Variables for Theming */
     :root {
-      --background-color: #1C2526; /* Dark mode background */
-      --text-color: #FFFFFF; /* Dark mode text */
-      --top-bar-bg: #333333; /* Dark mode top bar - medium gray for better contrast */
-      --card-bg-start: #2A2A2A; /* Dark mode card gradient start */
-      --card-bg-end: #1A1A1A; /* Dark mode card gradient end */
-      --container-bg: #2B2F30; /* Dark mode container */
-      --hover-bg: #3A3F40; /* Dark mode hover */
+      --background-color: #1C2526;
+      --text-color: #FFFFFF;
+      --top-bar-bg: #333333;
+      --card-bg-start: #2A2A2A;
+      --card-bg-end: #1A1A1A;
+      --container-bg: #2B2F30;
+      --hover-bg: #3A3F40;
     }
 
     body {
@@ -33,11 +32,10 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      padding-top: 60px; /* Space for top bar */
-      padding-bottom: 60px; /* Space for bottom nav bar */
+      padding-top: 60px;
+      padding-bottom: 60px;
     }
 
-    /* Custom Loading Animation */
     .loading-overlay {
       position: fixed;
       top: 0;
@@ -88,9 +86,10 @@
       left: 50%;
       transform: translate(-50%, -50%);
       display: none;
+      text-align: center;
+      max-width: 90%;
     }
 
-    /* Top Bar */
     .top-bar {
       position: fixed;
       top: 0;
@@ -117,7 +116,7 @@
       cursor: pointer;
       background: none;
       background-color: transparent;
-      filter: invert(100%); /* White in dark mode */
+      filter: invert(100%);
     }
 
     .top-bar .site-name {
@@ -127,7 +126,6 @@
       margin-left: 10px;
     }
 
-    /* Navigation Drawer */
     .nav-drawer {
       position: fixed;
       top: 0;
@@ -170,7 +168,6 @@
       background-color: var(--hover-bg);
     }
 
-    /* Bottom Navigation Bar */
     .nav-bar {
       position: fixed;
       bottom: 0;
@@ -219,10 +216,9 @@
       width: 20px;
       height: 20px;
       margin-bottom: 4px;
-      filter: invert(100%); /* White in dark mode */
+      filter: invert(100%);
     }
 
-    /* Rest of the CSS */
     .filter-buttons {
       display: flex;
       justify-content: center;
@@ -405,18 +401,9 @@
     }
 
     @keyframes pulse {
-      0% {
-        transform: translate(-50%, -50%) scale(1);
-        box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
-      }
-      50% {
-        transform: translate(-50%, -50%) scale(1.1);
-        box-shadow: 0 0 20px rgba(255, 0, 0, 0.8);
-      }
-      100% {
-        transform: translate(-50%, -50%) scale(1);
-        box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
-      }
+      0% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 10px rgba(255, 0, 0, 0.5); }
+      50% { transform: translate(-50%, -50%) scale(1.1); box-shadow: 0 0 20px rgba(255, 0, 0, 0.8); }
+      100% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 10px rgba(255, 0, 0, 0.5); }
     }
 
     .datetime-container {
@@ -613,12 +600,8 @@
     }
 
     @keyframes scroll {
-      0% {
-        transform: translateX(100%);
-      }
-      100% {
-        transform: translateX(-100%);
-      }
+      0% { transform: translateX(100%); }
+      100% { transform: translateX(-100%); }
     }
 
     .suggested-games {
@@ -929,9 +912,10 @@
   </nav>
 
   <!-- Scripts -->
-  <script src="https://vjs.zencdn.net/8.6.1/video.min.js"></script>
-  <script src="https://unpkg.com/videojs-contrib-hls@5.15.0/dist/videojs-contrib-hls.min.js"></script>
+  <script src="https://vjs.zencdn.net/8.10.0/video.js"></script>
+  <script src="https://unpkg.com/videojs-contrib-quality-levels@4.1.0/dist/videojs-contrib-quality-levels.min.js"></script>
   <script src="https://unpkg.com/videojs-http-source-selector@1.1.6/dist/videojs-http-source-selector.min.js"></script>
+  <script src="https://unpkg.com/videojs-pip@0.2.0/dist/videojs-pip.min.js"></script>
   <script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
   <script src="https://unpkg.com/videojs-chromecast@2.1.0/dist/videojs-chromecast.min.js"></script>
   <script>
@@ -963,9 +947,9 @@
       const loadingOverlay = document.getElementById('loading-overlay');
       const errorMessage = document.getElementById('error-message');
       try {
-        const response = await fetch('./events.json');
+        const response = await fetch('./events.json', { cache: 'no-store' });
         if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
+          throw new Error(`HTTP error! Status: ${response.status} (${response.statusText})`);
         }
         const data = await response.json();
         matches = data.map(match => ({
@@ -978,13 +962,13 @@
         updateCounts();
         updateTimers();
         loadingOverlay.style.display = 'none';
+        errorMessage.style.display = 'none';
       } catch (error) {
         console.error('Error loading events:', error.message);
         loadingOverlay.style.display = 'none';
-        errorMessage.textContent = `Failed to load events: ${error.message}. Please check if events.json exists and is valid.`;
+        errorMessage.textContent = `Failed to load events: ${error.message}. Check if events.json exists in public/events/ and is valid JSON.`;
         errorMessage.style.display = 'block';
-        // Fallback: Render empty state
-        renderMatches([]);
+        renderMatches([]); // Fallback to empty state
       }
     }
 
@@ -1000,45 +984,28 @@
         fluid: true,
         aspectRatio: '16:9',
         playbackRates: [0.5, 1, 1.5, 2],
-        plugins: {
-          httpSourceSelector: {
-            default: 'auto'
+        html5: {
+          vhs: {
+            overrideNative: true // Ensure consistent HLS playback
           }
+        },
+        plugins: {
+          httpSourceSelector: { default: 'auto' }
         }
       });
 
+      // Enable Quality Selector
       player.httpSourceSelector();
 
+      // Enable PiP Button
+      player.pip();
+
+      // Enable Chromecast
       if (window.chrome && window.chrome.cast) {
         player.chromecast({
           appId: chrome.cast.media.DEFAULT_MEDIA_RECEIVER_APP_ID
         });
       }
-
-      if (document.pictureInPictureEnabled) {
-        const pipButton = player.controlBar.addChild('button', {
-          controlBar: true,
-          clickHandler: () => {
-            const video = player.el().querySelector('video');
-            if (document.pictureInPictureElement) {
-              document.exitPictureInPicture();
-            } else {
-              video.requestPictureInPicture();
-            }
-          }
-        });
-        pipButton.el().innerHTML = '<span class="vjs-icon-placeholder vjs-icon-pip"></span>';
-        pipButton.addClass('vjs-pip-button');
-      }
-
-      const style = document.createElement('style');
-      style.innerHTML = `
-        .vjs-icon-pip:before {
-          content: '🖼️';
-          font-size: 16px;
-        }
-      `;
-      document.head.appendChild(style);
 
       player.on('error', () => {
         console.error('Stream error detected:', player.error());
