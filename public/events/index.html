@@ -176,7 +176,7 @@
       height: 50px;
       background-color: var(--top-bar-bg);
       display: flex;
-      justify-content: space475px;
+      justify-content: space-around;
       align-items: center;
       box-shadow: 0 -3px 6px rgba(0, 0, 0, 0.4);
       z-index: 1000;
@@ -397,7 +397,13 @@
       padding: 4px 8px;
       background: #FF0000;
       border-radius: 12px;
-      /* Animation disabled to prevent flickering */
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 10px rgba(255, 0, 0, 0.5); }
+      50% { transform: translate(-50%, -50%) scale(1.1); box-shadow: 0 0 20px rgba(255, 0, 0, 0.8); }
+      100% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 10px rgba(255, 0, 0, 0.5); }
     }
 
     .datetime-container {
@@ -937,7 +943,6 @@
     let streamTimeoutId = null;
     const STREAM_TIMEOUT = 15000;
     let failedStreams = new Set();
-    let matchStates = new Map(); // Cache match states to minimize DOM updates
 
     // Fallback matches if events.json fails
     const fallbackMatches = [
@@ -1275,7 +1280,6 @@
     function updateTimers() {
       const now = Date.now();
       let endedMatches = [];
-      let needsRender = false;
 
       matches.forEach(match => {
         const timerElement = document.getElementById(`timer-${match.id}`);
@@ -1298,43 +1302,30 @@
           newTimerText = 'Match Ended';
         }
 
-        // Get previous state from cache
-        const prevState = matchStates.get(match.id) || {
-          timerText: '',
-          isLive: false,
-          isUpcoming: false
-        };
-
-        // Only update if timer text or state has changed significantly
-        const timerNeedsUpdate = newTimerText !== prevState.timerText;
-        const liveNeedsUpdate = isLive !== prevState.isLive;
-        const datetimeNeedsUpdate = isUpcoming !== prevState.isUpcoming;
-
-        if (timerNeedsUpdate) {
+        // Only update timer text if it has changed
+        if (timerElement.textContent !== newTimerText) {
           console.log(`Updating timer for match ${match.id}: ${newTimerText}`);
           timerElement.textContent = newTimerText;
         }
 
-        if (liveNeedsUpdate) {
-          console.log(`Toggling live text for match ${match.id}: ${isLive}`);
-          liveElement.classList.toggle('hidden', !isLive);
+        // Update visibility only if necessary
+        const shouldShowLive = isLive;
+        const shouldShowDatetime = isUpcoming;
+        const liveIsHidden = liveElement.classList.contains('hidden');
+        const datetimeIsHidden = datetimeElement.classList.contains('hidden');
+
+        if (shouldShowLive !== liveIsHidden) {
+          console.log(`Toggling live text for match ${match.id}: ${shouldShowLive}`);
+          liveElement.classList.toggle('hidden', !shouldShowLive);
         }
 
-        if (datetimeNeedsUpdate) {
-          console.log(`Toggling datetime for match ${match.id}: ${isUpcoming}`);
-          datetimeElement.classList.toggle('hidden', !isUpcoming);
+        if (shouldShowDatetime !== datetimeIsHidden) {
+          console.log(`Toggling datetime for match ${match.id}: ${shouldShowDatetime}`);
+          datetimeElement.classList.toggle('hidden', !shouldShowDatetime);
         }
 
-        // Update state cache
-        matchStates.set(match.id, {
-          timerText: newTimerText,
-          isLive,
-          isUpcoming
-        });
-
-        if (isEnded && !prevState.isEnded) {
+        if (isEnded) {
           endedMatches.push(match);
-          needsRender = true;
         }
       });
 
@@ -1350,18 +1341,18 @@
       }
 
       // Only reset matches if all are ended
-      if (matches.length > 0 && matches.every(match => now > match.endTime) && !needsRender) {
+      if (matches.length > 0 && matches.every(match => now > match.endTime)) {
         console.log('Resetting matches to original');
         matches = [...originalMatches];
         renderMatches(matches.filter(m => currentFilter === "all" ||
           (currentFilter === "live" && Date.now() >= m.startTime && Date.now() <= m.endTime) ||
           (currentFilter === "upcoming" && Date.now() < m.startTime) ||
           (currentFilter === "recent" && Date.now() > m.endTime)));
-        needsRender = true;
       }
 
+      updateCounts();
       updateSuggestedTimers();
-      setTimeout(updateTimers, 2000); // Update every 2 seconds
+      setTimeout(updateTimers, 1000);
     }
 
     function updateCounts() {
@@ -1561,36 +1552,25 @@
           newTimerText = 'Match Ended';
         }
 
-        const prevState = matchStates.get(`suggested-${match.id}`) || {
-          timerText: '',
-          isLive: false,
-          isUpcoming: false
-        };
-
-        const timerNeedsUpdate = newTimerText !== prevState.timerText;
-        const liveNeedsUpdate = isLive !== prevState.isLive;
-        const datetimeNeedsUpdate = isUpcoming !== prevState.isUpcoming;
-
-        if (timerNeedsUpdate) {
+        if (timerElement.textContent !== newTimerText) {
           console.log(`Updating suggested timer for match ${match.id}: ${newTimerText}`);
           timerElement.textContent = newTimerText;
         }
 
-        if (liveNeedsUpdate) {
-          console.log(`Toggling suggested live text for match ${match.id}: ${isLive}`);
-          liveElement.classList.toggle('hidden', !isLive);
+        const shouldShowLive = isLive;
+        const shouldShowDatetime = isUpcoming;
+        const liveIsHidden = liveElement.classList.contains('hidden');
+        const datetimeIsHidden = datetimeElement.classList.contains('hidden');
+
+        if (shouldShowLive !== liveIsHidden) {
+          console.log(`Toggling suggested live text for match ${match.id}: ${shouldShowLive}`);
+          liveElement.classList.toggle('hidden', !shouldShowLive);
         }
 
-        if (datetimeNeedsUpdate) {
-          console.log(`Toggling suggested datetime for match ${match.id}: ${isUpcoming}`);
-          datetimeElement.classList.toggle('hidden', !isUpcoming);
+        if (shouldShowDatetime !== datetimeIsHidden) {
+          console.log(`Toggling suggested datetime for match ${match.id}: ${shouldShowDatetime}`);
+          datetimeElement.classList.toggle('hidden', !shouldShowDatetime);
         }
-
-        matchStates.set(`suggested-${match.id}`, {
-          timerText: newTimerText,
-          isLive,
-          isUpcoming
-        });
       });
     }
 
@@ -1609,7 +1589,6 @@
         (filter === "live" && Date.now() >= m.startTime && Date.now() <= m.endTime) ||
         (filter === "upcoming" && Date.now() < m.startTime) ||
         (filter === "recent" && Date.now() > m.endTime)));
-      updateCounts();
     }
 
     function filterByCategory(category, button) {
@@ -1628,7 +1607,6 @@
       }
 
       renderMatches(filteredMatches);
-      updateCounts();
     }
 
     // Ensure scripts are loaded before initializing
