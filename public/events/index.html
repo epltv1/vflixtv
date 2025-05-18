@@ -335,9 +335,7 @@
       'go:motogpstream': 'https://example.com/motogpstream.m3u8',
       'go:f1stream': 'https://example.com/f1stream.m3u8',
       'go:smackdownstream': 'https://example.com/smackdownstream.m3u8',
-      'go:willow2': 'https://example.com/w
-
-illow2.m3u8'
+      'go:willow2': 'https://example.com/willow2.m3u8'
     };
 
     // Matches data
@@ -525,13 +523,14 @@ illow2.m3u8'
       modal.style.display = 'none';
     }
 
-    function filterMatches(category, status) {
-      matches = originalMatches.filter(match => {
-        const matchStatus = getMatchStatus(match.startTime, match.endTime);
-        const categoryMatch = category === 'all' || match.category === category;
-        const statusMatch = status === 'all' || matchStatus === status;
-        return categoryMatch && statusMatch;
-      });
+    function filterMatches(filter) {
+      if (filter === 'all') {
+        matches = [...originalMatches];
+      } else if (['live', 'upcoming', 'recent'].includes(filter)) {
+        matches = originalMatches.filter(match => getMatchStatus(match.startTime, match.endTime) === filter);
+      } else {
+        matches = originalMatches.filter(match => match.category === filter);
+      }
       renderMatches(matches);
     }
 
@@ -539,9 +538,8 @@ illow2.m3u8'
       if (e.target.classList.contains('filter-button')) {
         document.querySelectorAll('.filter-button').forEach(btn => btn.classList.remove('active'));
         e.target.classList.add('active');
-        const category = e.target.dataset.filter;
-        const statusFilter = document.querySelector('.filter-button[data-filter="live"].active, .filter-button[data-filter="upcoming"].active, .filter-button[data-filter="recent"].active, .filter-button[data-filter="all"].active')?.dataset.filter || 'all';
-        filterMatches(category, statusFilter);
+        const filter = e.target.dataset.filter;
+        filterMatches(filter);
       }
     });
 
@@ -564,8 +562,9 @@ illow2.m3u8'
       }
     });
 
+    // Initialize with all matches
     setInterval(updateTimers, 1000);
-    renderMatches(matches);
+    filterMatches('all');
   </script>
 </body>
 </html>
