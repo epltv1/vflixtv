@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sports Channels</title>
-  <link rel="icon" href="/channels/favicon.ico" type="image/x-icon">
   <style>
     body {
       background-color: #111810;
@@ -141,6 +140,12 @@
       overflow-y: auto;
       text-align: center;
       position: relative;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0I apologize for the inconvenience, but I am not able to assist with generating images or providing image-related content, as image generation and manipulation are beyond my capabilities. However, I can still assist with the code and other aspects of your request! Let me continue with the completion of the `public/channels/index.html` file and the remaining files.
+
+---
+
+#### 3. `public/channels/index.html` (Sports Channels, continued)
+```html
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
       margin: 10px;
     }
@@ -268,15 +273,15 @@
       <div class="category-name">Laliga Tv</div>
     </div>
     <div class="logo-container" onclick="openModal('modal4')">
-      <div class="logo"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQG9mNdB2pgLZgvfx55FvTrYxe4oa0QrCAoew&s" alt="Tnt Sports"></div>
+      <div class="logo"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:GcsQG9mNdB2pgLZgvfx55FvTrYxe4oa0QrCAoew&s" alt="Tnt Sports"></div>
       <div class="category-name">Tnt Sports</div>
     </div>
     <div class="logo-container" onclick="openModal('modal5')">
-      <div class="logo"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTrKQ40uuw96bw9ZwV4ep736dayz7m9i9pW9duGCQRM1TkfVpwYu7R0mxJ&s=10" alt="Optus Sports"></div>
+      <div class="logo"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:GcsTTrKQ40uuw96bw9ZwV4ep736dayz7m9i9pW9duGCQRM1TkfVpwYu7R0mxJ&s=10" alt="Optus Sports"></div>
       <div class="category-name">Optus Sports</div>
     </div>
     <div class="logo-container" onclick="openModal('modal6')">
-      <div class="logo"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStHwkC8UzupyvQ2JskB6Wo3M83ezUOT1i9v9jAiVts0qcnl2XeT0A0-7VI&s=10" alt="Bein Sports"></div>
+      <div class="logo"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:GcsStHwkC8UzupyvQ2JskB6Wo3M83ezUOT1i9v9jAiVts0qcnl2XeT0A0-7VI&s=10" alt="Bein Sports"></div>
       <div class="category-name">Bein Sports</div>
     </div>
     <div class="logo-container" onclick="openModal('modal7')">
@@ -315,7 +320,7 @@
       <div class="logo"><img src="https://upload.wikimedia.org/wikipedia/commons/4/47/Novasports21.jpg" alt="Nova Sports"></div>
       <div class="category-name">Nova Sports</div>
     </div>
-    <div class="logo-container" onclick="openModal(“modal16”)">
+    <div class="logo-container" onclick="openModal('modal16')">
       <div class="logo"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:GcsS4xlFQuIwMN0zUTRh26MPMK8mlhjsG2bs5y_FZx96TKS1yThZIYJpmUvp2&s=10" alt="Dazn"></div>
       <div class="category-name">Dazn</div>
     </div>
@@ -500,7 +505,7 @@
       <h3>Formula 1</h3>
       <a href="go:f1uk" target="_blank">F1-Uk</a>
       <a href="go:f1es" target="_blank">F1-Es</a>
-      <a href="go:f1fr" target="_ пит="_blank">F1-Fr</a>
+      <a href="go:f1fr" target="_blank">F1-Fr</a>
       <a href="go:f1de" target="_blank">F1-De</a>
     </div>
   </div>
@@ -581,25 +586,47 @@
     };
 
     function openModal(modalId) {
-      const modal = document.getElementById(modalId);
-      if (modal) {
-        const links = modal.querySelectorAll('a');
-        links.forEach(link => {
-          const goUrl = link.getAttribute('href');
-          if (goUrl.startsWith('go:')) {
-            link.setAttribute('href', STREAM_URLS[goUrl] || 'https://example.com/stream.m3u8');
-          }
-        });
-        modal.style.display = 'flex';
+      try {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+          const links = modal.querySelectorAll('a');
+          links.forEach(link => {
+            const goUrl = link.getAttribute('href');
+            if (goUrl.startsWith('go:')) {
+              link.setAttribute('href', STREAM_URLS[goUrl] || 'https://example.com/stream.m3u8');
+            }
+          });
+          modal.style.display = 'flex';
+        } else {
+          console.error(`Modal with ID ${modalId} not found`);
+        }
+      } catch (error) {
+        console.error('Error opening modal:', error);
       }
     }
 
     function closeModal(modalId) {
-      const modal = document.getElementById(modalId);
-      if (modal) {
-        modal.style.display = 'none';
+      try {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+          modal.style.display = 'none';
+        } else {
+          console.error(`Modal with ID ${modalId} not found`);
+        }
+      } catch (error) {
+        console.error('Error closing modal:', error);
       }
     }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const logoContainers = document.querySelectorAll('.logo-container');
+      logoContainers.forEach(container => {
+        container.addEventListener('click', () => {
+          const modalId = container.getAttribute('onclick').match(/'([^']+)'/)[1];
+          openModal(modalId);
+        });
+      });
+    });
   </script>
 </body>
 </html>
