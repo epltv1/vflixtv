@@ -8,7 +8,6 @@
   <link rel="stylesheet" href="https://vjs.zencdn.net/8.10.0/video-js.css">
   <link rel="stylesheet" href="https://unpkg.com/videojs-contrib-hls@5.15.0/dist/videojs-contrib-hls.min.css">
   <link rel="stylesheet" href="https://unpkg.com/videojs-http-source-selector@1.1.6/dist/videojs-http-source-selector.css">
-  <link rel="icon" href="/events/favicon.ico" type="image/x-icon">
   <style>
     body {
       margin: 0;
@@ -230,20 +229,9 @@
       <button class="filter-button" data-filter="Wrestling">Wrestling</button>
     </div>
 
-    <div class="video-player-container">
-      <video-js id="my-video" class="video-js vjs-default-skin" controls preload="auto" width="100%" height="auto" data-setup='{"fluid": true}'>
-        <source src="https://flixtvlive.vercel.app/tnt1.m3u8" type="application/x-mpegURL">
-      </video-js>
-    </div>
-
     <div class="matches-container" id="matchesContainer"></div>
   </div>
 
-  <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
-  <script src="https://unpkg.com/videojs-contrib-hls@5.15.0/dist/videojs-contrib-hls.min.js"></script>
-  <script src="https://unpkg.com/videojs-http-source-selector@1.1.6/dist/videojs-http-source-selector.min.js"></script>
-  <script src="https://www.gstatic.com/cast/sdk/libs/sender/1.0/cast_framework.js"></script>
-  <script src="https://unpkg.com/videojs-chromecast@1.0.2/dist/videojs-chromecast.min.js"></script>
   <script>
     // Stream URL mappings for go: URLs (replace with real URLs)
     const STREAM_URLS = {
@@ -258,23 +246,6 @@
       'go:smackdownstream': 'https://example.com/smackdownstream.m3u8',
       'go:willow2': 'https://example.com/willow2.m3u8'
     };
-
-    // Initialize Video.js player
-    const player = videojs('my-video', {
-      html5: {
-        hls: {
-          withCredentials: false
-        }
-      },
-      plugins: {
-        httpSourceSelector: {
-          default: 'auto'
-        },
-        chromecast: {
-          appId: 'YOUR_CHROMECAST_APP_ID' // Replace with your Chromecast App ID if needed
-        }
-      }
-    });
 
     // Matches data
     const originalMatches = [
@@ -427,7 +398,7 @@
             <div class="timer" id="timer-${match.id}"></div>
             <div class="status">${status.charAt(0).toUpperCase() + status.slice(1)}</div>
             <div class="links-container">
-              ${match.links.map(link => `<a href="#" class="stream-link" data-url="${link.url}">${link.title}</a>`).join('')}
+              ${match.links.map(link => `<a href="/events/player.html?stream=${encodeURIComponent(link.url)}" class="stream-link">${link.title}</a>`).join('')}
             </div>
           </div>
         `;
@@ -455,24 +426,8 @@
       }
     });
 
-    document.getElementById('matchesContainer').addEventListener('click', (e) => {
-      if (e.target.classList.contains('stream-link')) {
-        e.preventDefault();
-        const url = e.target.dataset.url;
-        player.src({ src: url, type: 'application/x-mpegURL' });
-        player.play();
-      }
-    });
-
     setInterval(updateTimers, 1000);
     renderMatches(matches);
-
-    // Initialize Chromecast
-    const castContext = cast.framework.CastContext.getInstance();
-    castContext.setOptions({
-      receiverApplicationId: 'YOUR_CHROMECAST_APP_ID', // Replace if needed
-      autoJoinPolicy: chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED
-    });
   </script>
 </body>
 </html>
