@@ -31,6 +31,123 @@
       right: 10px;
       z-index: 10;
     }
+    .stream-links-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin: 20px auto;
+      max-width: 800px;
+    }
+    .stream-link {
+      padding: 8px 15px;
+      background: #FFD700;
+      color: #1C2526;
+      text-decoration: none;
+      border-radius: 5px;
+      font-size: 14px;
+      transition: background 0.3s;
+    }
+    .stream-link:hover {
+      background: #D4A017;
+    }
+    .suggestions-container {
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 20px;
+    }
+    .suggestions-container h2 {
+      font-size: 24px;
+      color: #FFD700;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .no-suggestions {
+      text-align: center;
+      color: #FFFFFF;
+      font-size: 18px;
+      opacity: 0.7;
+      margin: 50px 0;
+    }
+    .match-card {
+      background: #2B2F30;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      transition: transform 0.3s;
+      margin-bottom: 20px;
+    }
+    .match-card:hover {
+      transform: translateY(-5px);
+    }
+    .match-header {
+      background: #FFD700;
+      color: #1C2526;
+      padding: 10px;
+      text-align: center;
+      font-weight: bold;
+    }
+    .match-content {
+      padding: 15px;
+    }
+    .team-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .team {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .team img {
+      width: 40px;
+      height: 40px;
+      object-fit: contain;
+    }
+    .league-logo {
+      width: 50px;
+      height: 50px;
+      margin: 0 auto;
+      display: block;
+    }
+    .timer {
+      text-align: center;
+      color: #FFD700;
+      font-size: 14px;
+      margin: 10px 0;
+    }
+    .status {
+      text-align: center;
+      color: #00FF00;
+      font-weight: bold;
+    }
+    .links-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+    @media (max-width: 768px) {
+      .team img {
+        width: 30px;
+        height: 30px;
+      }
+      .stream-link {
+        padding: 6px 12px;
+        font-size: 12px;
+      }
+    }
+    @media (max-width: 480px) {
+      .video-player-container, .suggestions-container {
+        padding: 10px;
+      }
+      .team-container {
+        flex-direction: column;
+        gap: 10px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -46,10 +163,103 @@
     </video-js>
   </div>
 
+  <div class="stream-links-container" id="streamLinksContainer"></div>
+  <div class="suggestions-container" id="suggestionsContainer">
+    <h2>Suggested Matches</h2>
+  </div>
+
   <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
   <script src="https://unpkg.com/videojs-contrib-hls@5.15.0/dist/videojs-contrib-hls.min.js"></script>
   <script src="https://unpkg.com/videojs-http-source-selector@1.1.6/dist/videojs-http-source-selector.min.js"></script>
   <script>
+    // Matches data (same as index.html)
+    const originalMatches = [
+      {
+        id: "match-1",
+        category: "Cricket",
+        title: "Cricket | IPL",
+        leagueLogo: "https://encrypted-tbn0.gstatic.com/images?q=CCRT-eFQpZW6oSCeedeyIkRyCWRTw7ntVrSRQrobMBCK0m9aKSR299mgyMcY&s=10",
+        teamA: { name: "LSG", logo: "https://img.sofascore.com/api/v1/team/410010/image" },
+        teamB: { name: "CSK", logo: "https://img.sofascore.com/api/v1/team/187777/image" },
+        startTime: new Date("2025-05-03T00:10:00").getTime(),
+        endTime: new Date("2025-05-04T20:59:00").getTime(),
+        links: [
+          { title: "Willow Sports", url: "https://flixtvlive.vercel.app/tnt1.m3u8" },
+          { title: "Star Hindi", url: "https://epltv1.github.io/cbs.m3u8" },
+          { title: "Sky Cricket", url: "https://epltv1.github.io/bt1.m3u8" },
+          { title: "Willow 2", url: "https://example.com/willow2.m3u8" }
+        ]
+      },
+      {
+        id: "match-2",
+        category: "Football",
+        title: "Football | Serie A",
+        leagueLogo: "https://upload.wikimedia.org/wikipedia/en/thumb/e/e3/Serie_A_logo_%282019%29.svg/1200px-Serie_A_logo_%282019%29.svg.png",
+        teamA: { name: "Inter", logo: "https://img.sofascore.com/api/v1/team/2697/image" },
+        teamB: { name: "Milan", logo: "https://img.sofascore.com/api/v1/team/2686/image" },
+        startTime: new Date("2025-05-04T15:00:00").getTime(),
+        endTime: new Date("2025-05-04T17:00:00").getTime(),
+        links: [
+          { title: "Sky Sports", url: "https://example.com/skymain.m3u8" },
+          { title: "Optus Sports", url: "https://example.com/optus1.m3u8" }
+        ]
+      },
+      {
+        id: "match-3",
+        category: "Football",
+        title: "Football | La Liga",
+        leagueLogo: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/La_Liga_Logo_%282019%29.svg/1200px-La_Liga_Logo_%282019%29.svg.png",
+        teamA: { name: "Real Madrid", logo: "https://img.sofascore.com/api/v1/team/2829/image" },
+        teamB: { name: "Barcelona", logo: "https://img.sofascore.com/api/v1/team/2817/image" },
+        startTime: new Date("2025-05-05T20:00:00").getTime(),
+        endTime: new Date("2025-05-05T22:00:00").getTime(),
+        links: [
+          { title: "LaLiga TV", url: "https://example.com/laligafhd.m3u8" },
+          { title: "SuperSport", url: "https://example.com/sliga.m3u8" }
+        ]
+      },
+      {
+        id: "match-4",
+        category: "Motorsport",
+        title: "Motorsport | MotoGP",
+        leagueLogo: "https://upload.wikimedia.org/wikipedia/en/thumb/2/20/MotoGP_Logo.svg/1200px-MotoGP_Logo.svg.png",
+        teamA: { name: "M. Marquez", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Marc_Marquez_2019.svg/120px-Marc_Marquez_2019.svg.png" },
+        teamB: { name: "F. Bagnaia", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Francesco_Bagnaia_2018.svg/120px-Francesco_Bagnaia_2018.svg.png" },
+        startTime: new Date("2025-05-06T14:00:00").getTime(),
+        endTime: new Date("2025-05-06T16:00:00").getTime(),
+        links: [
+          { title: "MotoGP Stream", url: "https://example.com/motogpstream.m3u8" }
+        ]
+      },
+      {
+        id: "match-5",
+        category: "Motorsport",
+        title: "Motorsport | F1",
+        leagueLogo: "https://images.seeklogo.com/logo-png/32/2/formula-one-2017-logo-png_seeklogo-322033.png",
+        teamA: { name: "L. Hamilton", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Lewis_Hamilton_2020.svg/120px-Lewis_Hamilton_2020.svg.png" },
+        teamB: { name: "M. Verstappen", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Max_Verstappen_2021.svg/120px-Max_Verstappen_2021.svg.png" },
+        startTime: new Date("2025-05-07T15:00:00").getTime(),
+        endTime: new Date("2025-05-07T17:00:00").getTime(),
+        links: [
+          { title: "Sky F1", url: "https://example.com/skyf1.m3u8" },
+          { title: "F1 Stream", url: "https://example.com/f1stream.m3u8" }
+        ]
+      },
+      {
+        id: "match-6",
+        category: "Wrestling",
+        title: "Wrestling | SmackDown",
+        leagueLogo: "https://upload.wikimedia.org/wikipedia/en/thumb/3/3f/WWE_SmackDown_Logo.svg/1200px-WWE_SmackDown_Logo.svg.png",
+        teamA: { name: "Roman Reigns", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Roman_Reigns_April_2014.jpg/120px-Roman_Reigns_April_2014.jpg" },
+        teamB: { name: "Cody Rhodes", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Cody_Rhodes_AEW_2019.jpg/120px-Cody_Rhodes_AEW_2019.jpg" },
+        startTime: new Date("2025-05-08T20:00:00").getTime(),
+        endTime: new Date("2025-05-08T22:00:00").getTime(),
+        links: [
+          { title: "SmackDown Stream", url: "https://example.com/smackdownstream.m3u8" }
+        ]
+      }
+    ];
+
     // Initialize Video.js player
     const player = videojs('my-video', {
       html5: {
@@ -64,16 +274,117 @@
       }
     });
 
-    // Get stream URL from query parameter
-    const urlParams = new URLSearchParams(window.location.search);
-    const streamUrl = urlParams.get('stream') || 'https://flixtvlive.vercel.app/tnt1.m3u8'; // Fallback URL
-
-    // Set and play the stream
+    // Get selected stream and match ID
+    const streamUrl = sessionStorage.getItem('selectedStream') || 'https://flixtvlive.vercel.app/tnt1.m3u8';
+    const matchId = sessionStorage.getItem('selectedMatchId');
     player.src({ src: streamUrl, type: 'application/x-mpegURL' });
     player.play().catch(error => {
       console.error('Error playing stream:', error);
       alert('Failed to load stream. Please try another link.');
     });
+
+    // Render stream links
+    const currentMatch = originalMatches.find(match => match.id === matchId);
+    const streamLinksContainer = document.getElementById('streamLinksContainer');
+    if (currentMatch) {
+      streamLinksContainer.innerHTML = currentMatch.links.map(link => `
+        <a href="#" class="stream-link" data-url="${link.url}">${link.title}</a>
+      `).join('');
+    }
+
+    // Handle stream link clicks
+    streamLinksContainer.addEventListener('click', (e) => {
+      if (e.target.classList.contains('stream-link')) {
+        e.preventDefault();
+        const url = e.target.dataset.url;
+        sessionStorage.setItem('selectedStream', url);
+        player.src({ src: url, type: 'application/x-mpegURL' });
+        player.play().catch(error => {
+          console.error('Error playing stream:', error);
+          alert('Failed to load stream. Please try another link.');
+        });
+      }
+    });
+
+    // Render suggested matches
+    const suggestionsContainer = document.getElementById('suggestionsContainer');
+    const suggestions = originalMatches.filter(match => match.id !== matchId && match.category === currentMatch?.category);
+    if (suggestions.length === 0) {
+      suggestionsContainer.innerHTML = '<h2>Suggested Matches</h2><div class="no-suggestions">No suggestions</div>';
+    } else {
+      suggestionsContainer.innerHTML = '<h2>Suggested Matches</h2>' + suggestions.map(match => {
+        const status = getMatchStatus(match.startTime, match.endTime);
+        return `
+          <div class="match-card">
+            <div class="match-header">${match.title}</div>
+            <div class="match-content">
+              <img src="${match.leagueLogo}" alt="League Logo" class="league-logo">
+              <div class="team-container">
+                <div class="team">
+                  <img src="${match.teamA.logo}" alt="${match.teamA.name}">
+                  <span>${match.teamA.name}</span>
+                </div>
+                <div class="team">
+                  <span>${match.teamB.name}</span>
+                  <img src="${match.teamB.logo}" alt="${match.teamB.name}">
+                </div>
+              </div>
+              <div class="timer" id="timer-${match.id}"></div>
+              <div class="status">${status.charAt(0).toUpperCase() + status.slice(1)}</div>
+              <div class="links-container">
+                ${match.links.map(link => `<a href="#" class="stream-link" data-url="${link.url}" data-match-id="${match.id}">${link.title}</a>`).join('')}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Handle suggestion stream link clicks
+    suggestionsContainer.addEventListener('click', (e) => {
+      if (e.target.classList.contains('stream-link')) {
+        e.preventDefault();
+        const url = e.target.dataset.url;
+        const newMatchId = e.target.dataset.matchId;
+        sessionStorage.setItem('selectedStream', url);
+        sessionStorage.setItem('selectedMatchId', newMatchId);
+        window.location.reload();
+      }
+    });
+
+    // Timer functions (same as index.html)
+    function getMatchStatus(startTime, endTime) {
+      const now = new Date().getTime();
+      if (now >= startTime && now <= endTime) return 'live';
+      if (now < startTime) return 'upcoming';
+      if (now > endTime) return 'recent';
+      return 'unknown';
+    }
+
+    function updateTimers() {
+      originalMatches.forEach(match => {
+        const timerElement = document.querySelector(`#timer-${match.id}`);
+        if (timerElement) {
+          const now = new Date().getTime();
+          const status = getMatchStatus(match.startTime, match.endTime);
+          if (status === 'live') {
+            const timeLeft = match.endTime - now;
+            const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+            timerElement.textContent = `Ends in ${minutes}m ${seconds}s`;
+          } else if (status === 'upcoming') {
+            const timeUntil = match.startTime - now;
+            const hours = Math.floor(timeUntil / (1000 * 60 * 60));
+            const minutes = Math.floor((timeUntil % (1000 * 60 * 60)) / (1000 * 60));
+            timerElement.textContent = `Starts in ${hours}h ${minutes}m`;
+          } else if (status === 'recent') {
+            timerElement.textContent = 'Match ended';
+          }
+        }
+      });
+    }
+
+    setInterval(updateTimers, 1000);
   </script>
 </body>
 </html>
