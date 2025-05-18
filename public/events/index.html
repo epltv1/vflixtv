@@ -139,36 +139,6 @@
       background: #D4A017;
     }
 
-    .video-player-container {
-      width: 100%;
-      max-width: 800px;
-      margin: 20px auto;
-      position: relative;
-    }
-
-    #my-video {
-      width: 100%;
-      border-radius: 10px;
-      background: #000;
-    }
-
-    .vjs-http-source-selector {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      z-index: 10;
-    }
-
-    .chromecast-button {
-      margin: 10px;
-      padding: 10px 20px;
-      background: #FFD700;
-      color: #1C2526;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
     @media (max-width: 768px) {
       .matches-container {
         grid-template-columns: 1fr;
@@ -398,7 +368,7 @@
             <div class="timer" id="timer-${match.id}"></div>
             <div class="status">${status.charAt(0).toUpperCase() + status.slice(1)}</div>
             <div class="links-container">
-              ${match.links.map(link => `<a href="/events/player.html?stream=${encodeURIComponent(link.url)}" class="stream-link">${link.title}</a>`).join('')}
+              ${match.links.map(link => `<a href="#" class="stream-link" data-url="${link.url}" data-match-id="${match.id}">${link.title}</a>`).join('')}
             </div>
           </div>
         `;
@@ -423,6 +393,17 @@
         const category = e.target.dataset.filter;
         const statusFilter = document.querySelector('.filter-button[data-filter="live"].active, .filter-button[data-filter="upcoming"].active, .filter-button[data-filter="recent"].active, .filter-button[data-filter="all"].active')?.dataset.filter || 'all';
         filterMatches(category, statusFilter);
+      }
+    });
+
+    document.getElementById('matchesContainer').addEventListener('click', (e) => {
+      if (e.target.classList.contains('stream-link')) {
+        e.preventDefault();
+        const url = e.target.dataset.url;
+        const matchId = e.target.dataset.matchId;
+        sessionStorage.setItem('selectedStream', url);
+        sessionStorage.setItem('selectedMatchId', matchId);
+        window.location.href = '/events/player.html';
       }
     });
 
