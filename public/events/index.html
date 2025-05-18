@@ -5,9 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Live Events</title>
-  <link rel="stylesheet" href="https://vjs.zencdn.net/8.10.0/video-js.css">
-  <link rel="stylesheet" href="https://unpkg.com/videojs-contrib-hls@5.15.0/dist/videojs-contrib-hls.min.css">
-  <link rel="stylesheet" href="https://unpkg.com/videojs-http-source-selector@1.1.6/dist/videojs-http-source-selector.css">
   <style>
     body {
       margin: 0;
@@ -56,87 +53,168 @@
     }
 
     .match-card {
-      background: #2B2F30;
-      border-radius: 10px;
+      background: linear-gradient(135deg, #f5e6cc, #e6d5b8);
+      border: 2px solid #FFD700;
+      border-radius: 12px;
       overflow: hidden;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-      transition: transform 0.3s;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+      position: relative;
+      font-family: 'Georgia', serif;
     }
 
     .match-card:hover {
-      transform: translateY(-5px);
+      transform: translateY(-5px) rotate(1deg);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
     }
 
     .match-header {
-      background: #FFD700;
-      color: #1C2526;
-      padding: 10px;
+      background: #2B2F30;
+      color: #FFD700;
+      padding: 12px;
       text-align: center;
       font-weight: bold;
+      font-size: 18px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
     .match-content {
-      padding: 15px;
+      padding: 20px;
+      text-align: center;
     }
 
     .team-container {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 10px;
+      margin: 15px 0;
     }
 
     .team {
       display: flex;
+      flex-direction: column;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
+      max-width: 40%;
     }
 
     .team img {
-      width: 40px;
-      height: 40px;
+      width: 50px;
+      height: 50px;
       object-fit: contain;
+      border: 2px solid #FFD700;
+      border-radius: 50%;
+    }
+
+    .team span {
+      font-size: 16px;
+      color: #1C2526;
+      font-weight: bold;
     }
 
     .league-logo {
-      width: 50px;
-      height: 50px;
-      margin: 0 auto;
-      display: block;
+      width: 60px;
+      height: 60px;
+      object-fit: contain;
+      border: 3px solid #FFD700;
+      border-radius: 50%;
+      background: #FFFFFF;
+      padding: 5px;
+      margin: 0 auto 15px;
     }
 
     .timer {
-      text-align: center;
-      color: #FFD700;
       font-size: 14px;
+      color: #1C2526;
+      font-weight: bold;
       margin: 10px 0;
+      min-height: 20px;
+    }
+
+    .live-animation {
+      display: inline-block;
+      color: #FF0000;
+      font-weight: bold;
+      font-size: 16px;
+      text-shadow: 0 0 8px #FFD700;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.1); opacity: 0.7; }
+      100% { transform: scale(1); opacity: 1; }
     }
 
     .status {
       text-align: center;
       color: #00FF00;
       font-weight: bold;
+      font-size: 14px;
+      margin-top: 10px;
     }
 
-    .links-container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
       justify-content: center;
+      align-items: center;
+      z-index: 1000;
     }
 
-    .stream-link {
-      padding: 8px 15px;
+    .modal-content {
+      background: #2B2F30;
+      border: 2px solid #FFD700;
+      border-radius: 10px;
+      padding: 20px;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+      color: #FFFFFF;
+    }
+
+    .modal-content h3 {
+      margin: 0 0 15px;
+      color: #FFD700;
+      font-family: 'Georgia', serif;
+    }
+
+    .modal-content .stream-link {
+      display: block;
+      padding: 10px;
+      margin: 10px 0;
       background: #FFD700;
       color: #1C2526;
       text-decoration: none;
       border-radius: 5px;
-      font-size: 14px;
+      font-size: 16px;
       transition: background 0.3s;
     }
 
-    .stream-link:hover {
+    .modal-content .stream-link:hover {
       background: #D4A017;
+    }
+
+    .modal-content .close-button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      background: #FF0000;
+      color: #FFFFFF;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .modal-content .close-button:hover {
+      background: #CC0000;
     }
 
     @media (max-width: 768px) {
@@ -145,8 +223,8 @@
       }
 
       .team img {
-        width: 30px;
-        height: 30px;
+        width: 40px;
+        height: 40px;
       }
 
       .filter-button {
@@ -154,9 +232,9 @@
         font-size: 14px;
       }
 
-      .stream-link {
-        padding: 6px 12px;
-        font-size: 12px;
+      .modal-content {
+        width: 95%;
+        padding: 15px;
       }
     }
 
@@ -170,12 +248,16 @@
       }
 
       .match-content {
-        padding: 10px;
+        padding: 15px;
       }
 
       .team-container {
         flex-direction: column;
         gap: 10px;
+      }
+
+      .team {
+        max-width: 100%;
       }
     }
   </style>
@@ -200,6 +282,15 @@
     </div>
 
     <div class="matches-container" id="matchesContainer"></div>
+  </div>
+
+  <!-- Modal for stream links -->
+  <div class="modal" id="streamModal">
+    <div class="modal-content">
+      <h3 id="modalTitle"></h3>
+      <div id="modalLinks"></div>
+      <button class="close-button" onclick="closeModal()">Close</button>
+    </div>
   </div>
 
   <script>
@@ -316,9 +407,17 @@
       return 'unknown';
     }
 
-    function formatTime(ms) {
-      const date = new Date(ms);
-      return date.toLocaleString('en-US', { weekday: 'short', hour: 'numeric', minute: '2-digit', hour12: true });
+    function formatLocalDateTime(ms) {
+      return new Date(ms).toLocaleString('en-US', {
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
+      });
     }
 
     function updateTimers() {
@@ -328,17 +427,18 @@
           const now = new Date().getTime();
           const status = getMatchStatus(match.startTime, match.endTime);
           if (status === 'live') {
-            const timeLeft = match.endTime - now;
-            const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-            timerElement.textContent = `Ends in ${minutes}m ${seconds}s`;
+            timerElement.innerHTML = '<span class="live-animation">LIVE</span>';
           } else if (status === 'upcoming') {
             const timeUntil = match.startTime - now;
-            const hours = Math.floor(timeUntil / (1000 * 60 * 60));
-            const minutes = Math.floor((timeUntil % (1000 * 60 * 60)) / (1000 * 60));
-            timerElement.textContent = `Starts in ${hours}h ${minutes}m`;
+            if (timeUntil > 0) {
+              const hours = Math.floor(timeUntil / (1000 * 60 * 60));
+              const minutes = Math.floor((timeUntil % (1000 * 60 * 60)) / (1000 * 60));
+              timerElement.textContent = `Starts: ${formatLocalDateTime(match.startTime)} (in ${hours}h ${minutes}m)`;
+            } else {
+              timerElement.textContent = `Starts: ${formatLocalDateTime(match.startTime)}`;
+            }
           } else if (status === 'recent') {
-            timerElement.textContent = 'Match ended';
+            timerElement.textContent = '';
           }
         }
       });
@@ -351,6 +451,7 @@
         const status = getMatchStatus(match.startTime, match.endTime);
         const matchElement = document.createElement('div');
         matchElement.className = 'match-card';
+        matchElement.dataset.matchId = match.id;
         matchElement.innerHTML = `
           <div class="match-header">${match.title}</div>
           <div class="match-content">
@@ -367,13 +468,29 @@
             </div>
             <div class="timer" id="timer-${match.id}"></div>
             <div class="status">${status.charAt(0).toUpperCase() + status.slice(1)}</div>
-            <div class="links-container">
-              ${match.links.map(link => `<a href="#" class="stream-link" data-url="${link.url}" data-match-id="${match.id}">${link.title}</a>`).join('')}
-            </div>
           </div>
         `;
         container.appendChild(matchElement);
       });
+      updateTimers();
+    }
+
+    function openModal(matchId) {
+      const match = originalMatches.find(m => m.id === matchId);
+      if (!match) return;
+      const modal = document.getElementById('streamModal');
+      const modalTitle = document.getElementById('modalTitle');
+      const modalLinks = document.getElementById('modalLinks');
+      modalTitle.textContent = match.title;
+      modalLinks.innerHTML = match.links.map(link => `
+        <a href="#" class="stream-link" data-url="${link.url}" data-match-id="${match.id}">${link.title}</a>
+      `).join('');
+      modal.style.display = 'flex';
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('streamModal');
+      modal.style.display = 'none';
     }
 
     function filterMatches(category, status) {
@@ -397,6 +514,14 @@
     });
 
     document.getElementById('matchesContainer').addEventListener('click', (e) => {
+      const matchCard = e.target.closest('.match-card');
+      if (matchCard) {
+        const matchId = matchCard.dataset.matchId;
+        openModal(matchId);
+      }
+    });
+
+    document.getElementById('streamModal').addEventListener('click', (e) => {
       if (e.target.classList.contains('stream-link')) {
         e.preventDefault();
         const url = e.target.dataset.url;
