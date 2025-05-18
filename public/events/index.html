@@ -273,7 +273,7 @@
     <div class="modal-content">
       <h3 id="modalTitle"></h3>
       <div id="modalLinks"></div>
-      <button class="close-button" onclick="closeModal()">Close</button>
+      <button class="close-button">Close</button>
     </div>
   </div>
 
@@ -402,6 +402,7 @@
       renderMatches(filteredMatches);
     }
 
+    // Event listeners
     document.getElementById('filterContainer').addEventListener('click', (e) => {
       if (e.target.classList.contains('filter-button')) {
         document.querySelectorAll('.filter-button').forEach(btn => btn.classList.remove('active'));
@@ -429,6 +430,9 @@
         window.location.href = '/events/player.html';
       }
     });
+
+    // Fix: Attach close button event listener programmatically
+    document.querySelector('.modal-content .close-button').addEventListener('click', closeModal);
 
     // Initialize with all matches
     setInterval(updateTimers, 1000);
