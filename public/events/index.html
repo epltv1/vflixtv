@@ -53,7 +53,7 @@
     }
 
     .match-card {
-      background: linear-gradient(135deg, #f5e6cc, #e6d5b8);
+      background: #1C2526;
       border: 2px solid #FFD700;
       border-radius: 12px;
       overflow: hidden;
@@ -72,16 +72,17 @@
     .match-header {
       background: #2B2F30;
       color: #FFD700;
-      padding: 12px;
+      padding: 10px;
       text-align: center;
       font-weight: bold;
-      font-size: 18px;
+      font-size: 16px;
       text-transform: uppercase;
       letter-spacing: 1px;
     }
 
     .match-content {
-      padding: 20px;
+      background: #2B2F30;
+      padding: 15px;
       text-align: center;
     }
 
@@ -89,55 +90,55 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin: 15px 0;
+      margin: 10px 0;
     }
 
     .team {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       max-width: 40%;
     }
 
     .team img {
-      width: 50px;
-      height: 50px;
+      width: 40px;
+      height: 40px;
       object-fit: contain;
       border: 2px solid #FFD700;
       border-radius: 50%;
     }
 
     .team span {
-      font-size: 16px;
-      color: #1C2526;
+      font-size: 14px;
+      color: #FFFFFF;
       font-weight: bold;
     }
 
     .league-logo {
-      width: 60px;
-      height: 60px;
+      width: 50px;
+      height: 50px;
       object-fit: contain;
       border: 3px solid #FFD700;
       border-radius: 50%;
       background: #FFFFFF;
-      padding: 5px;
-      margin: 0 auto 15px;
+      padding: 4px;
+      margin: 0 auto 10px;
     }
 
     .timer {
-      font-size: 14px;
-      color: #1C2526;
+      font-size: 13px;
+      color: #FFFFFF;
       font-weight: bold;
-      margin: 10px 0;
-      min-height: 20px;
+      margin: 8px 0;
+      min-height: 18px;
     }
 
     .live-animation {
       display: inline-block;
       color: #FF0000;
       font-weight: bold;
-      font-size: 16px;
+      font-size: 14px;
       text-shadow: 0 0 8px #FFD700;
       animation: pulse 1.5s infinite;
     }
@@ -152,8 +153,8 @@
       text-align: center;
       color: #00FF00;
       font-weight: bold;
-      font-size: 14px;
-      margin-top: 10px;
+      font-size: 13px;
+      margin: 8px 0;
     }
 
     .modal {
@@ -223,8 +224,18 @@
       }
 
       .team img {
-        width: 40px;
-        height: 40px;
+        width: 35px;
+        height: 35px;
+      }
+
+      .league-logo {
+        width: 45px;
+        height: 45px;
+        padding: 3px;
+      }
+
+      .match-content {
+        padding: 12px;
       }
 
       .filter-button {
@@ -248,16 +259,35 @@
       }
 
       .match-content {
-        padding: 15px;
+        padding: 10px;
       }
 
       .team-container {
         flex-direction: column;
-        gap: 10px;
+        gap: 8px;
+        margin: 8px 0;
       }
 
       .team {
         max-width: 100%;
+      }
+
+      .team img {
+        width: 30px;
+        height: 30px;
+      }
+
+      .league-logo {
+        width: 40px;
+        height: 40px;
+      }
+
+      .team span {
+        font-size: 13px;
+      }
+
+      .timer, .status {
+        font-size: 12px;
       }
     }
   </style>
@@ -305,7 +335,9 @@
       'go:motogpstream': 'https://example.com/motogpstream.m3u8',
       'go:f1stream': 'https://example.com/f1stream.m3u8',
       'go:smackdownstream': 'https://example.com/smackdownstream.m3u8',
-      'go:willow2': 'https://example.com/willow2.m3u8'
+      'go:willow2': 'https://example.com/w
+
+illow2.m3u8'
     };
 
     // Matches data
@@ -320,7 +352,7 @@
         startTime: new Date("2025-05-03T00:10:00").getTime(),
         endTime: new Date("2025-05-04T20:59:00").getTime(),
         links: [
-          { title: "Willow Sports", url: "https://flixtvlive.vercel.app/tnt2.m3u8" },
+          { title: "Willow Sports", url: "https://flixtvlive.vercel.app/tnt1.m3u8" },
           { title: "Star Hindi", url: "https://epltv1.github.io/cbs.m3u8" },
           { title: "Sky Cricket", url: "https://epltv1.github.io/bt1.m3u8" },
           { title: "Willow 2", url: STREAM_URLS['go:willow2'] || 'https://example.com/willow2.m3u8' }
