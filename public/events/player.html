@@ -249,7 +249,7 @@
       'go:willow2': 'https://example.com/willow2.m3u8'
     };
 
-    // Matches data (same as public/events/index.html)
+    // Matches data (same as public/events/index.html, with added match-7)
     const originalMatches = [
       {
         id: "match-1",
@@ -360,14 +360,42 @@
       hls.loadSource(streamUrl);
       hls.attachMedia(video);
       const player = new Plyr(video, {
-        controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
+        controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'pip', 'fullscreen'],
+        settings: ['quality'],
+        quality: {
+          default: 'auto',
+          options: ['auto']
+        },
         autoplay: false
+      });
+
+      // Update quality options dynamically
+      hls.on(Hls.Events.MANIFEST_PARSED, (event, data) => {
+        const levels = data.levels.map((level, index) => ({
+          height: level.height || 'auto',
+          id: index
+        }));
+        const qualityOptions = levels.map(level => level.height === 'auto' ? 'auto' : level.height);
+        player.quality = {
+          default: 'auto',
+          options: qualityOptions,
+          forced: qualityOptions.length > 1,
+          onChange: (quality) => {
+            const levelIndex = levels.findIndex(level => level.height === quality || (quality === 'auto' && level.height === 'auto'));
+            hls.currentLevel = levelIndex;
+          }
+        };
       });
     } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
       // Native HLS support (e.g., Safari)
       video.src = streamUrl;
       const player = new Plyr(video, {
-        controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
+        controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'pip', 'fullscreen'],
+        settings: ['quality'],
+        quality: {
+          default: 'auto',
+          options: ['auto']
+        },
         autoplay: false
       });
     } else {
@@ -378,10 +406,12 @@
     const matchId = sessionStorage.getItem('selectedMatchId');
     const currentMatch = originalMatches.find(match => match.id === matchId);
     const streamLinksContainer = document.getElementById('streamLinksContainer');
-    if (currentMatch) {
+    if (currentMatch && currentMatch.links.length > 0) {
       streamLinksContainer.innerHTML = currentMatch.links.map(link => `
-        <a href="#" class="stream-link" data-url="${link.url}" data-match-id="${match.id}">${link.title}</a>
+        <a href="#" class="stream-link" data-url="${link.url}" data-match-id="${currentMatch.id}">${link.title}</a>
       `).join('');
+    } else {
+      streamLinksContainer.innerHTML = '<p style="color: #FFFFFF; opacity: 0.7;">No stream links available</p>';
     }
 
     // Handle stream link clicks
