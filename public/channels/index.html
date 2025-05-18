@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sports Channels</title>
+  <link rel="icon" href="/channels/favicon.ico" type="image/x-icon">
+  <style>
+    body {
+      background-color: #111810;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 10px;
+      padding: 10px;
+      justify-items: center;
+    }
+
+    .logo-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: clamp(110px, 22vw, 130px);
+      height: clamp(110px, 22vw, 130px);
+      background: linear-gradient(135deg, #222, #333);
+      border: 2px solid #00ff00;
+      border-radius: 10px;
+      padding: clamp(5px, 1vw, 8px);
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s ease-in-out;
+    }
+
+    .logo-container:hover {
+      border-color: #00cc00;
+      box-shadow: 0 6px 12px rgba(0, 255, 0, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .logo {
+      width: clamp(90px, 18vw, 110px);
+      height: clamp(90px, 18vw, 110px);
+      border-radius: 5px;
+      border: 2px solid #00ff00;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #fff;
+      cursor: pointer;
+    }
+
+    .logo img {
+      max-width: 100%;
+      max-height: 100%;
+    }
+
+    .logo:hover {
+      transform: scale(1.1);
+      transition: 0.3s ease-in-out;
+    }
+
+    .category-name {
+      margin-top: 3px;
+      font-size: clamp(9px, 1.3vw, 11px);
+      text-align: center;
+      color: #ddd;
+      text-transform: capitalize;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      width: 100%;
+      font-weight: 500;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+        gap: 8px;
+      }
+
+      .logo-container {
+        width: clamp(100px, 22vw, 120px);
+        height: clamp(100px, 22vw, 120px);
+      }
+
+      .logo {
+        width: clamp(80px, 18vw, 100px);
+        height: clamp(80px, 18vw, 100px);
+      }
+    }
+
+    @media (min-width: 1200px) {
+      .container {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 15px;
+      }
+
+      .logo-container {
+        width: clamp(130px, 16vw, 150px);
+        height: clamp(130px, 20vw, 150px);
+      }
+
+      .logo {
+        width: clamp(100px, 14vw, 120px);
+        height: clamp(100px, 14vw, 120px);
+      }
+
+      .category-name {
+        font-size: clamp(11px, 1vw, 13px);
+      }
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      overflow-y: auto;
+    }
+
+    .modal-content {
+      background-color: #333;
+      color: #fff;
+      padding: clamp(15px, 3vw, 25px);
+      border-radius: 10px;
+      width: clamp( Submissions250px, 80vw, 400px);
+      max-height: 80vh;
+      overflow-y: auto;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      margin: 10px;
+    }
+
+    .modal-content h3 {
+      font-size: clamp(16px, 3vw, 20px);
+      margin: 0 0 15px 0;
+    }
+
+    .modal-content a {
+      display: block;
+      color: #00ff00;
+      text-decoration: none;
+      margin: clamp(5px, 1vw, 10px) 0;
+      padding: clamp(8px, 1.5vw, 12px);
+      border: 1px solid #00ff00;
+      border-radius: 5px;
+      background-color: #444;
+      font-size: clamp(12px, 2vw, 14px);
+      transition: background-color 0.3s ease-in-out;
+    }
+
+    .modal-content a:hover {
+      background-color: #555;
+      text-decoration: none;
+    }
+
+    .close-button {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: #ff0000;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      padding: clamp(5px, 1vw, 10px);
+      font-size: clamp(12px, 1.5vw, 14px);
+      transition: background-color 0.3s ease-in-out;
+    }
+
+    .close-button:hover {
+      background-color: #cc0000;
+    }
+
+    @media (max-width: 600px) {
+      .modal-content {
+        width: clamp(200px, 90vw, 300px);
+        padding: clamp(10px, 2vw, 15px);
+        max-height: 70vh;
+      }
+
+      .modal-content h3 {
+        font-size: clamp(14px, 2.5vw, 18px);
+      }
+
+      .modal-content a {
+        font-size: clamp(11px, 1.8vw, 13px);
+        padding: clamp(6px, 1vw, 8px);
+      }
+
+      .close-button {
+        padding: clamp(4px, 0.8vw, 8px);
+        font-size: clamp(10px, 1.2vw, 12px);
+      }
+    }
+
+    @media (min-width: 1200px) {
+      .modal-content {
+        width: clamp(350px, 50vw, 450px);
+        padding: clamp(20px, 2vw, 30px);
+      }
+
+      .modal-content h3 {
+        font-size: clamp(18px, 1.5vw, 22px);
+      }
+
+      .modal-content a {
+        font-size: clamp(13px, 1vw, 15px);
+        padding: clamp(10px, 1vw, 14px);
+      }
+
+      .close-button {
+        padding: clamp(6px, 0.5vw, 12px);
+        font-size: clamp(13px, 1vw, 15px);
+      }
+    }
+
+    .ad-banner {
+      width: 100%;
+      height: clamp(70px, 10vw, 90px);
+      background-color: #fff;
+      border: 2px solid #00ff00;
+      border-radius: 10px;
+      text-align: center;
+      padding: 10px;
+      margin: 20px 0;
+    }
+
+    .ad-banner img {
+      max-width: 100%;
+      max-height: 100%;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <nav style="background: #2B2F30; padding: 10px; text-align: center;">
+    <a href="/" style="color: #FFD700; margin: 0 15px; text-decoration: none;">Home</a>
+    <a href="/events" style="color: #FFD700; margin: 0 15px; text-decoration: none;">Live Events</a>
+    <a href="/channels" style="color: #FFD700; margin: 0 15px; text-decoration: none;">Sports Channels</a>
+  </nav>
+
+  <div class="container" id="logoContainer">
+    <div class="logo-container" onclick="openModal('modal1')">
+      <div class="logo"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnrfOecDMCcT88aEeW5V76h4pZCax9UOqrXA&s" alt="Supersport"></div>
+      <div class="category-name">Supersport</div>
+    </div>
+    <div class="logo-container" onclick="openModal('modal2')">
+      <div class="logo"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ1wup1aWMPIVeBrOSxX6R8noF0pTHvRXXSvA&s" alt="SSC"></div>
+      <div class="category-name">SSC</div>
+    </div>
+    <div class="logo-container" onclick="openModal('modal3')">
+      <div class="logo"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiKdXnP09l9zNxtGLn1ohNrverlESTSkL6tWtUXbbJM5UguCcYHJ3wnOsYDnRa5c8pLeP3I1tJJRuMGmOAGk-YZLNvkPgTu1pQC1CSffJOPmZb1ups3feM-dUsqB4NjWI4If5-Gw5RqwZ-DskmrMKCQGNxIc9FIOjY47lijwcg1LRx0IbomByUWkaluTAYU/s320/1000030600.png" alt="Laliga Tv"></div>
+      <div class="category-name">Laliga Tv</div>
+    </div>
+    <div class="logo-container" onclick="openModal('modal4')">
+      <div class="logo"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQG9mNdB2pgLZgvfx55FvTrYxe4oa0QrCAoew&s" alt="Tnt Sports"></div>
+      <div class="category-name">Tnt Sports</div>
+    </div>
+    <div class="logo-container" onclick="openModal('modal5')">
+      <div class="logo"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTrKQ40uuw96bw9ZwV4ep736dayz7m9i9pW9duGCQRM1TkfVpwYu7R0mxJ&s=10" alt="Optus Sports"></div>
+      <div class="category-name">Optus Sports</div>
+    </div>
+    <div class="logo-container" onclick="openModal('modal6')">
+      <div class="logo"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStHwkC8UzupyvQ2JskB6Wo3M83ezUOT1i9v9jAiVts0qcnl2XeT0A0-7VI&s=10" alt="Bein Sports"></div>
+      <div class="category-name">Bein Sports</div>
+    </div>
+    <div class="logo-container" onclick="openModal('modal7')">
+      <div class="logo"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRoeSgOWYkIm73yN_w92AM3RH16kK4IhMtc7A&s" alt="SkySports"></div>
+      <div class="category-name">SkySports</div>
+    </div>
+    <div class="logo-container" onclick="openModal('modal8')">
+      <div class="logo"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSNQazn93bsasm0CpQGOfOdu9wp3Pr4rsnN3XH7eJrQQxWAuq_9qbCUTIgW&s=10" alt="Canal+Sports"></div>
+      <div class="category-name">Canal+Sports</div>
+    </div>
+    <div class="logo-container" onclick="openModal('modal9')">
+      <div class="logo"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRo24cc363JC-1HbRHC53QbowcO743GA7QTxAG5eWDvofERF0OijEBK6Kk&s=10" alt="TSN"></div>
+      <div class="category-name">TSN</div>
+    </div>
+    <div class="logo-container" onclick="openModal('modal10')">
+      <div class="logo"><img src="https://upload.wikimedia.org/wikipedia/en/thumb/d/d2/NBA_TV.svg/1200px-NBA_TV.svg.png" alt="Nba Tv"></div>
+      <div class="category-name">Nba Tv</div>
+    </div>
+    <div class="logo-container" onclick="openModal('modal11')">
+      <div class="logo"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTohMnfDZNGPn8buiak4g0jkPnhqbv1Edqqdk_w2L4-Fonlm17FDFiAAWES&s=10" alt="Nbc Sports"></div>
+      <div class="category-name">Nbc Sports</div>
+    </div>
+    <div class="logo-container" onclick="openModal('modal12')">
+      <div class="logo"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ83JWPYirCVHbWA9QJGrubb3oVBc9gBHdP4PGcc2uS9oPFh1_R1HEjzIip&s=10" alt="Eurosports"></div>
+      <div class="category-name">Eurosports</div>
+    </div>
+    <div class="logo-container" onclick="openModal('modal13')">
+      <div class="logo"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTWGgOG75527w9Si2F1kYk77j3jyeUEB_m61PtwNXiKskSKYI-nsXIEdxln&s=10" alt="Fox Sports"></div>
+      <div class="category-name">Fox Sports</div>
+    </div>
+    <div class="logo-container" onclick="openModal('modal14')">
+      <div class="logo"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjyyZXb-jxfBcWabCwgtLBGxb3RQUo2kT-3q9k2Uq05YSXYYvAH44CnIw&s=10" alt="Arena Sports"></div>
+      <div class="category-name">Arena Sports</div>
+    </div>
+    <div class="logo-container" onclick="openModal('modal15')">
+      <div class="logo"><img src="https://upload.wikimedia.org/wikipedia/commons/4/47/Novasports21.jpg" alt="Nova Sports"></div>
+      <div class="category-name">Nova Sports</div>
+    </div>
+    <div class="logo-container" onclick="openModal('modal16')">
+      <div class="logo"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS4xlFQuIwMN0zUTRh26MPMK8mlhjsG2bs5y_FZx96TKS1yThZIYJpmUvp2&s=10" alt="Dazn"></div>
+      <div class="category-name">Dazn</div>
+    </div>
+    <div class="logo-container" onclick="openModal('modal17')">
+      <div class="logo"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQG4qO9Z672NjgEuS3hVBfFQ0O2-Ac1i678Bwrb8TCSLFny1sFN7UOXmzk&s=10" alt="Now Sport"></div>
+      <div class="category-name">Now Sport</div>
+    </div>
+    <div class="logo-container" onclick="openModal('modal18')">
+      <div class="logo"><img src="https://images.seeklogo.com/logo-png/32/2/formula-one-2017-logo-png_seeklogo-322033.png" alt="F1"></div>
+      <div class="category-name">F1</div>
+    </div>
+    <div class="logo-container" onclick="openModal('modal19')">
+      <div class="logo"><img src="https://play-lh.googleusercontent.com/q5ySKSzFqWTVr9kQQXI0F8aWe_F9tDmDyHHIsw-736EmCYN7RiLBgviytOyBAXhJ5lA" alt="Rmc Sports"></div>
+      <div class="category-name">Rmc Sports</div>
+    </div>
+  </div>
+
+  <!-- Modals -->
+  <div class="modal" id="modal1">
+    <div class="modal-content">
+      <button class="close-button" onclick="closeModal('modal1')">Close</button>
+      <h3>SuperSport</h3>
+      <a href="go:Psl" target="_blank">PSL</a>
+      <a href="go:grand" target="_blank">Grandstand</a>
+      <a href="go:Epl" target="_blank">Premier League</a>
+      <a href="go:Blitz" target="_blank">Blitz</a>
+      <a href="go:Vr1" target="_blank">Variety 1</a>
+      <a href="go:Vr2" target="_blank">Variety 2</a>
+      <a href="go:Sliga" target="_blank">Laliga</a>
+      <a href="go:Epl" target="_blank">Pl</a>
+      <a href="go:Sfoot" target="_blank">Football</a>
+      <a href="go:saction" target="_blank">Action</a>
+    </div>
+  </div>
+  <div class="modal" id="modal2">
+    <div class="modal-content">
+      <button class="close-button" onclick="closeModal('modal2')">Close</button>
+      <h3>SSC Links</h3>
+      <a href="go:ssc1" target="_blank">SSC 1</a>
+      <a href="go:ssc2" target="_blank">SSC 2</a>
+      <a href="go:ssc3" target="_blank">SSC 3</a>
+      <a href="go:ssc" target="_blank">Ssc News</a>
+    </div>
+  </div>
+  <div class="modal" id="modal3">
+    <div class="modal-content">
+      <button class="close-button" onclick="closeModal('modal3')">Close</button>
+      <h3>Laliga Tv</h3>
+      <a href="go:laligafhd" target="_blank">Laliga Tv Fhd</a>
+      <a href="go:laligahd" target="_blank">Laliga Tv Hd</a>
+    </div>
+  </div>
+  <div class="modal" id="modal4">
+    <div class="modal-content">
+      <button class="close-button" onclick="closeModal('modal4')">Close</button>
+      <h3>Tnt Sports</h3>
+      <a href="go:tnt1" target="_blank">Tnt 1</a>
+      <a href="go:tnt2" target="_blank">Tnt 2</a>
+      <a href="go:tnt3" target="_blank">Tnt 3</a>
+      <a href="go:tnt4" target="_blank">Tnt 4</a>
+      <a href="go:tnt5" target="_blank">Tnt 5</a>
+    </div>
+  </div>
+  <div class="modal" id="modal5">
+    <div class="modal-content">
+      <button class="close-button" onclick="closeModal('modal5')">Close</button>
+      <h3>Optus Sports</h3>
+      <a href="go:opt1" target="_blank">Optus 1</a>
+      <a href="go:opt2" target="_blank">Optus 2</a>
+      <a href="go:opt3" target="_blank">Optus 3</a>
+      <a href="go:opt4" target="_blank">Optus 4</a>
+    </div>
+  </div>
+  <div class="modal" id="modal6">
+    <div class="modal-content">
+      <button class="close-button" onclick="closeModal('modal6')">Close</button>
+      <h3>Bein Sports</h3>
+      <a href="go:beineng1" target="_blank">Bein Sports En 1</a>
+      <a href="go:bieneng2" target="_blank">Bein Sports En 2</a>
+      <a href="go:beinnews" target="_blank">Bein Sports News</a>
+      <a href="go:ssc" target="_blank">Ssc News</a>
+    </div>
+  </div>
+  <div class="modal" id="modal7">
+    <div class="modal-content">
+      <button class="close-button" onclick="closeModal('modal7')">Close</button>
+      <h3>SkySports</h3>
+      <a href="go:sspnews" target="_blank">Skysports News</a>
+      <a href="go:skymain" target="_blank">SkySports Main Event</a>
+      <a href="go:skypl" target="_blank">Skysports Epl</a>
+      <a href="go:skyAction" target="_blank">Skysports Action</a>
+      <a href="go:skyf1" target="_blank">Skysports F1</a>
+    </div>
+  </div>
+  <div class="modal" id="modal8">
+    <div class="modal-content">
+      <button class="close-button" onclick="closeModal('modal8')">Close</button>
+      <h3>Canal+ Sports</h3>
+      <a href="go:canalplus1" target="_blank">Canal+Sports1</a>
+      <a href="go:canalplus2" target="_blank">Canal+Sports2</a>
+      <a href="go:canalplus3" target="_blank">Canal+Sports3</a>
+      <a href="go:canalplus4" target="_blank">Canal+Sports4</a>
+    </div>
+  </div>
+  <div class="modal" id="modal9">
+    <div class="modal-content">
+      <button class="close-button" onclick="closeModal('modal9')">Close</button>
+      <h3>TSN</h3>
+      <a href="go:tsn1" target="_blank">Tsn1</a>
+      <a href="go:tsn2" target="_blank">Tsn2</a>
+      <a href="go:tsn3" target="_blank">Tsn3</a>
+    </div>
+  </div>
+  <div class="modal" id="modal10">
+    <div class="modal-content">
+      <button class="close-button" onclick="closeModal('modal10')">Close</button>
+      <h3>Nba Tv</h3>
+      <a href="go:nbatvus" target="_blank">(Usa) Nba Tv</a>
+    </div>
+  </div>
+  <div class="modal" id="modal11">
+    <div class="modal-content">
+      <button class="close-button" onclick="closeModal('modal11')">Close</button>
+      <h3>Nbc Sports</h3>
+      <a href="go:nbcsports" target="_blank">Nbc Sports</a>
+    </div>
+  </div>
+  <div class="modal" id="modal12">
+    <div class="modal-content">
+      <button class="close-button" onclick="closeModal('modal12')">Close</button>
+      <h3>Eurosports</h3>
+      <a href="go:eurosp1uk" target="_blank">Eurosports 1-Uk</a>
+      <a href="go:eurosp2uk" target="_blank">Eurosports 2-Uk</a>
+    </div>
+  </div>
+  <div class="modal" id="modal13">
+    <div class="modal-content">
+      <button class="close-button" onclick="closeModal('modal13')">Close</button>
+      <h3>Fox Sports</h3>
+      <a href="go:fs1usa" target="_blank">Fox Sports 1-Usa</a>
+      <a href="go:fs2usa" target="_blank">Fox Sports 2-Usa</a>
+    </div>
+  </div>
+  <div class="modal" id="modal14">
+    <div class="modal-content">
+      <button class="close-button" onclick="closeModal('modal14')">Close</button>
+      <h3>Arena Sports</h3>
+      <a href="go:arenas1" target="_blank">Arena Sports 1</a>
+    </div>
+  </div>
+  <div class="modal" id="modal15">
+    <div class="modal-content">
+      <button class="close-button" onclick="closeModal('modal15')">Close</button>
+      <h3>Nova Sports</h3>
+      <a href="go:novasnews" target="_blank">Nova Sports News</a>
+      <a href="go:novasprime" target="_blank">Nova Sports Prime</a>
+      <a href="go:novasepl" target="_blank">Nova Sports Epl</a>
+      <a href="go:novastart" target="_blank">Nova Sports Start</a>
+    </div>
+  </div>
+  <div class="modal" id="modal16">
+    <div class="modal-content">
+      <button class="close-button" onclick="closeModal('modal16')">Close</button>
+      <h3>Dazn</h3>
+      <a href="go:dazn1" target="_blank">Dazn 1</a>
+      <a href="go:dazn2" target="_blank">Dazn 2</a>
+    </div>
+  </div>
+  <div class="modal" id="modal17">
+    <div class="modal-content">
+      <button class="close-button" onclick="closeModal('modal17')">Close</button>
+      <h3>Now Sport</h3>
+      <a href="go:nowprime" target="_blank">Now Sport Prime</a>
+      <a href="go:now1" target="_blank">Now Sport 1</a>
+      <a href="go:now2" target="_blank">Now Sports 2</a>
+      <a href="go:now3" target="_blank">Now Sports 3</a>
+    </div>
+  </div>
+  <div class="modal" id="modal18">
+    <div class="modal-content">
+      <button class="close-button" onclick="closeModal('modal18')">Close</button>
+      <h3>Formula 1</h3>
+      <a href="go:f1uk" target="_blank">F1-Uk</a>
+      <a href="go:f1es" target="_blank">F1-Es</a>
+      <a href="go:f1fr" target="_blank">F1-Fr</a>
+      <a href="go:f1de" target="_blank">F1-De</a>
+    </div>
+  </div>
+  <div class="modal" id="modal19">
+    <div class="modal-content">
+      <button class="close-button" onclick="closeModal('modal19')">Close</button>
+      <h3>Rmc Sports</h3>
+      <a href="go:rmcsports1" target="_blank">Rmc Sports 1</a>
+      <a href="go:rmcsports2" target="_blank">Rmc Sports 2</a>
+    </div>
+  </div>
+
+  <script>
+    // Stream URL mappings for go: URLs (replace with real URLs)
+    const STREAM_URLS = {
+      'go:Psl': 'https://example.com/supersport-psl.m3u8',
+      'go:grand': 'https://example.com/supersport-grand.m3u8',
+      'go:Epl': 'https://example.com/supersport-epl.m3u8',
+      'go:Blitz': 'https://example.com/supersport-blitz.m3u8',
+      'go:Vr1': 'https://example.com/supersport-vr1.m3u8',
+      'go:Vr2': 'https://example.com/supersport-vr2.m3u8',
+      'go:Sliga': 'https://example.com/supersport-laliga.m3u8',
+      'go:Sfoot': 'https://example.com/supersport-football.m3u8',
+      'go:saction': 'https://example.com/supersport-action.m3u8',
+      'go:ssc1': 'https://example.com/ssc1.m3u8',
+      'go:ssc2': 'https://example.com/ssc2.m3u8',
+      'go:ssc3': 'https://example.com/ssc3.m3u8',
+      'go:ssc': 'https://example.com/ssc-news.m3u8',
+      'go:laligafhd': 'https://example.com/laligafhd.m3u8',
+      'go:laligahd': 'https://example.com/laligahd.m3u8',
+      'go:tnt1': 'https://example.com/tnt1.m3u8',
+      'go:tnt2': 'https://example.com/tnt2.m3u8',
+      'go:tnt3': 'https://example.com/tnt3.m3u8',
+      'go:tnt4': 'https://example.com/tnt4.m3u8',
+      'go:tnt5': 'https://example.com/tnt5.m3u8',
+      'go:opt1': 'https://example.com/optus1.m3u8',
+      'go:opt2': 'https://example.com/optus2.m3u8',
+      'go:opt3': 'https://example.com/optus3.m3u8',
+      'go:opt4': 'https://example.com/optus4.m3u8',
+      'go:beineng1': 'https://example.com/beineng1.m3u8',
+      'go:bieneng2': 'https://example.com/beineng2.m3u8',
+      'go:beinnews': 'https://example.com/beinnews.m3u8',
+      'go:sspnews': 'https://example.com/skysports-news.m3u8',
+      'go:skymain': 'https://example.com/skymain.m3u8',
+      'go:skypl': 'https://example.com/skysports-epl.m3u8',
+      'go:skyAction': 'https://example.com/skysports-action.m3u8',
+      'go:skyf1': 'https://example.com/skyf1.m3u8',
+      'go:canalplus1': 'https://example.com/canalplus1.m3u8',
+      'go:canalplus2': 'https://example.com/canalplus2.m3u8',
+      'go:canalplus3': 'https://example.com/canalplus3.m3u8',
+      'go:canalplus4': 'https://example.com/canalplus4.m3u8',
+      'go:tsn1': 'https://example.com/tsn1.m3u8',
+      'go:tsn2': 'https://example.com/tsn2.m3u8',
+      'go:tsn3': 'https://example.com/tsn3.m3u8',
+      'go:nbatvus': 'https://example.com/nbatvus.m3u8',
+      'go:nbcsports': 'https://example.com/nbcsports.m3u8',
+      'go:eurosp1uk': 'https://example.com/eurosp1uk.m3u8',
+      'go:eurosp2uk': 'https://example.com/eurosp2uk.m3u8',
+      'go:fs1usa': 'https://example.com/fs1usa.m3u8',
+      'go:fs2usa': 'https://example.com/fs2usa.m3u8',
+      'go:arenas1': 'https://example.com/arenas1.m3u8',
+      'go:novasnews': 'https://example.com/novasnews.m3u8',
+      'go:novasprime': 'https://example.com/novasprime.m3u8',
+      'go:novasepl': 'https://example.com/novasepl.m3u8',
+      'go:novastart': 'https://example.com/novastart.m3u8',
+      'go:dazn1': 'https://example.com/dazn1.m3u8',
+      'go:dazn2': 'https://example.com/dazn2.m3u8',
+      'go:nowprime': 'https://example.com/nowprime.m3u8',
+      'go:now1': 'https://example.com/now1.m3u8',
+      'go:now2': 'https://example.com/now2.m3u8',
+      'go:now3': 'https://example.com/now3.m3u8',
+      'go:f1uk': 'https://example.com/f1uk.m3u8',
+      'go:f1es': 'https://example.com/f1es.m3u8',
+      'go:f1fr': 'https://example.com/f1fr.m3u8',
+      'go:f1de': 'https://example.com/f1de.m3u8',
+      'go:rmcsports1': 'https://example.com/rmcsports1.m3u8',
+      'go:rmcsports2': 'https://example.com/rmcsports2.m3u8'
+    };
+
+    function openModal(modalId) {
+      try {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+          const links = modal.querySelectorAll('a');
+          links.forEach(link => {
+            const goUrl = link.getAttribute('href');
+            if (goUrl.startsWith('go:')) {
+              link.setAttribute('href', STREAM_URLS[goUrl] || 'https://example.com/stream.m3u8');
+            }
+          });
+          modal.style.display = 'flex';
+        } else {
+          console.error(`Modal with ID ${modalId} not found`);
+        }
+      } catch (error) {
+        console.error('Error opening modal:', error);
+      }
+    }
+
+    function closeModal(modalId) {
+      try {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+          modal.style.display = 'none';
+        } else {
+          console.error(`Modal with ID ${modalId} not found`);
+        }
+      } catch (error) {
+        console.error('Error closing modal:', error);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const logoContainers = document.querySelectorAll('.logo-container');
+      logoContainers.forEach(container => {
+        container.addEventListener('click', () => {
+          const modalId = container.getAttribute('onclick').match(/'([^']+)'/)[1];
+          openModal(modalId);
+        });
+      });
+    });
+  </script>
+</body>
+</html>
