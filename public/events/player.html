@@ -3,10 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Stream Player</title>
-  <link rel="stylesheet" href="https://vjs.zencdn.net/8.10.0/video-js.css">
-  <link rel="stylesheet" href="https://unpkg.com/videojs-contrib-hls@5.15.0/dist/videojs-contrib-hls.min.css">
-  <link rel="stylesheet" href="https://unpkg.com/videojs-http-source-selector@1.1.6/dist/videojs-http-source-selector.css">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Event Player</title>
+  <link href="https://vjs.zencdn.net/7.20.3/video-js.css" rel="stylesheet">
   <style>
     body {
       margin: 0;
@@ -14,138 +13,202 @@
       background: #1C2526;
       color: #FFFFFF;
     }
-    .video-player-container {
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .player-container {
       width: 100%;
       max-width: 800px;
-      margin: 20px auto;
-      position: relative;
+      margin-bottom: 20px;
     }
-    #my-video {
+
+    .video-js {
       width: 100%;
-      border-radius: 10px;
-      background: #000;
+      height: auto;
+      aspect-ratio: 16 / 9;
     }
-    .vjs-http-source-selector {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      z-index: 10;
-    }
+
     .stream-links-container {
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
       justify-content: center;
-      margin: 20px auto;
-      max-width: 800px;
+      margin: 20px 0;
     }
+
     .stream-link {
-      padding: 8px 15px;
+      padding: 10px 20px;
       background: #FFD700;
       color: #1C2526;
       text-decoration: none;
       border-radius: 5px;
-      font-size: 14px;
+      font-size: 16px;
       transition: background 0.3s;
     }
+
     .stream-link:hover {
       background: #D4A017;
     }
+
     .suggestions-container {
-      max-width: 1200px;
-      margin: 20px auto;
-      padding: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      width: 100%;
     }
-    .suggestions-container h2 {
-      font-size: 24px;
-      color: #FFD700;
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    .no-suggestions {
-      text-align: center;
-      color: #FFFFFF;
-      font-size: 18px;
-      opacity: 0.7;
-      margin: 50px 0;
-    }
+
     .match-card {
-      background: #2B2F30;
-      border-radius: 10px;
+      background: #1C2526;
+      border: 2px solid #FFD700;
+      border-radius: 12px;
       overflow: hidden;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-      transition: transform 0.3s;
-      margin-bottom: 20px;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+      position: relative;
+      font-family: 'Georgia', serif;
     }
+
     .match-card:hover {
-      transform: translateY(-5px);
+      transform: translateY(-5px) rotate(1deg);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
     }
+
     .match-header {
-      background: #FFD700;
-      color: #1C2526;
+      background: #2B2F30;
+      color: #FFD700;
       padding: 10px;
       text-align: center;
       font-weight: bold;
+      font-size: 16px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
+
     .match-content {
+      background: #2B2F30;
       padding: 15px;
+      text-align: center;
     }
+
     .team-container {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 10px;
+      margin: 10px 0;
     }
+
     .team {
       display: flex;
+      flex-direction: column;
       align-items: center;
-      gap: 10px;
+      gap: 6px;
+      max-width: 40%;
     }
+
     .team img {
       width: 40px;
       height: 40px;
       object-fit: contain;
+      border: 2px solid #FFD700;
+      border-radius: 50%;
     }
+
+    .team span {
+      font-size: 14px;
+      color: #FFFFFF;
+      font-weight: bold;
+    }
+
     .league-logo {
       width: 50px;
       height: 50px;
-      margin: 0 auto;
-      display: block;
+      object-fit: contain;
+      border: 3px solid #FFD700;
+      border-radius: 50%;
+      background: #FFFFFF;
+      padding: 4px;
+      margin: 0 auto 10px;
     }
+
     .timer {
-      text-align: center;
-      color: #FFD700;
-      font-size: 14px;
-      margin: 10px 0;
+      font-size: 13px;
+      color: #FFFFFF;
+      font-weight: bold;
+      margin: 8px 0;
+      min-height: 18px;
     }
+
+    .live-animation {
+      display: inline-block;
+      color: #FF0000;
+      font-weight: bold;
+      font-size: 14px;
+      text-shadow: 0 0 8px #FFD700;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.1); opacity: 0.7; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
     .status {
       text-align: center;
       color: #00FF00;
       font-weight: bold;
+      font-size: 13px;
+      margin: 8px 0;
     }
+
     .links-container {
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
       justify-content: center;
+      margin-top: 10px;
     }
+
+    .no-suggestions {
+      text-align: center;
+      color: #FFFFFF;
+      opacity: 0.7;
+      font-size: 16px;
+      margin: 20px 0;
+    }
+
+    /* Responsive adjustments for non-card elements */
     @media (max-width: 768px) {
-      .team img {
-        width: 30px;
-        height: 30px;
+      .container {
+        padding: 15px;
       }
+
+      .player-container {
+        max-width: 100%;
+      }
+
       .stream-link {
-        padding: 6px 12px;
-        font-size: 12px;
+        padding: 8px 15px;
+        font-size: 14px;
       }
     }
+
     @media (max-width: 480px) {
-      .video-player-container, .suggestions-container {
+      .container {
         padding: 10px;
       }
-      .team-container {
-        flex-direction: column;
-        gap: 10px;
+
+      .stream-link {
+        padding: 6px 12px;
+        font-size: 13px;
       }
     }
   </style>
@@ -157,22 +220,35 @@
     <a href="/channels" style="color: #FFD700; margin: 0 15px; text-decoration: none;">Sports Channels</a>
   </nav>
 
-  <div class="video-player-container">
-    <video-js id="my-video" class="video-js vjs-default-skin" controls preload="auto" width="100%" height="auto" data-setup='{"fluid": true}'>
-      <source src="" type="application/x-mpegURL">
-    </video-js>
+  <div class="container">
+    <div class="player-container">
+      <video id="player" class="video-js vjs-default-skin" controls preload="auto">
+        <source src="" type="application/x-mpegURL">
+      </video>
+    </div>
+    <div class="stream-links-container" id="streamLinksContainer"></div>
+    <div class="suggestions-container" id="suggestionsContainer">
+      <h2 style="color: #FFD700; width: 100%; text-align: center;">Suggested Matches</h2>
+    </div>
   </div>
 
-  <div class="stream-links-container" id="streamLinksContainer"></div>
-  <div class="suggestions-container" id="suggestionsContainer">
-    <h2>Suggested Matches</h2>
-  </div>
-
-  <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
-  <script src="https://unpkg.com/videojs-contrib-hls@5.15.0/dist/videojs-contrib-hls.min.js"></script>
-  <script src="https://unpkg.com/videojs-http-source-selector@1.1.6/dist/videojs-http-source-selector.min.js"></script>
+  <script src="https://vjs.zencdn.net/7.20.3/video.min.js"></script>
   <script>
-    // Matches data (same as index.html)
+    // Stream URL mappings for go: URLs (replace with real URLs)
+    const STREAM_URLS = {
+      'go:skymain': 'https://example.com/skymain.m3u8',
+      'go:opt1': 'https://example.com/optus1.m3u8',
+      'go:opt3': 'https://example.com/optus3.m3u8',
+      'go:skyf1': 'https://example.com/skyf1.m3u8',
+      'go:laligafhd': 'https://example.com/laligafhd.m3u8',
+      'go:sliga': 'https://example.com/sliga.m3u8',
+      'go:motogpstream': 'https://example.com/motogpstream.m3u8',
+      'go:f1stream': 'https://example.com/f1stream.m3u8',
+      'go:smackdownstream': 'https://example.com/smackdownstream.m3u8',
+      'go:willow2': 'https://example.com/willow2.m3u8'
+    };
+
+    // Matches data (same as public/events/index.html)
     const originalMatches = [
       {
         id: "match-1",
@@ -187,7 +263,7 @@
           { title: "Willow Sports", url: "https://flixtvlive.vercel.app/tnt1.m3u8" },
           { title: "Star Hindi", url: "https://epltv1.github.io/cbs.m3u8" },
           { title: "Sky Cricket", url: "https://epltv1.github.io/bt1.m3u8" },
-          { title: "Willow 2", url: "https://example.com/willow2.m3u8" }
+          { title: "Willow 2", url: STREAM_URLS['go:willow2'] || 'https://example.com/willow2.m3u8' }
         ]
       },
       {
@@ -200,8 +276,8 @@
         startTime: new Date("2025-05-04T15:00:00").getTime(),
         endTime: new Date("2025-05-04T17:00:00").getTime(),
         links: [
-          { title: "Sky Sports", url: "https://example.com/skymain.m3u8" },
-          { title: "Optus Sports", url: "https://example.com/optus1.m3u8" }
+          { title: "Sky Sports", url: STREAM_URLS['go:skymain'] || 'https://example.com/skymain.m3u8' },
+          { title: "Optus Sports", url: STREAM_URLS['go:opt1'] || 'https://example.com/optus1.m3u8' }
         ]
       },
       {
@@ -214,8 +290,8 @@
         startTime: new Date("2025-05-05T20:00:00").getTime(),
         endTime: new Date("2025-05-05T22:00:00").getTime(),
         links: [
-          { title: "LaLiga TV", url: "https://example.com/laligafhd.m3u8" },
-          { title: "SuperSport", url: "https://example.com/sliga.m3u8" }
+          { title: "LaLiga TV", url: STREAM_URLS['go:laligafhd'] || 'https://example.com/laligafhd.m3u8' },
+          { title: "SuperSport", url: STREAM_URLS['go:sliga'] || 'https://example.com/sliga.m3u8' }
         ]
       },
       {
@@ -228,7 +304,7 @@
         startTime: new Date("2025-05-06T14:00:00").getTime(),
         endTime: new Date("2025-05-06T16:00:00").getTime(),
         links: [
-          { title: "MotoGP Stream", url: "https://example.com/motogpstream.m3u8" }
+          { title: "MotoGP Stream", url: STREAM_URLS['go:motogpstream'] || 'https://example.com/motogpstream.m3u8' }
         ]
       },
       {
@@ -241,8 +317,8 @@
         startTime: new Date("2025-05-07T15:00:00").getTime(),
         endTime: new Date("2025-05-07T17:00:00").getTime(),
         links: [
-          { title: "Sky F1", url: "https://example.com/skyf1.m3u8" },
-          { title: "F1 Stream", url: "https://example.com/f1stream.m3u8" }
+          { title: "Sky F1", url: STREAM_URLS['go:skyf1'] || 'https://example.com/skyf1.m3u8' },
+          { title: "F1 Stream", url: STREAM_URLS['go:f1stream'] || 'https://example.com/f1stream.m3u8' }
         ]
       },
       {
@@ -255,40 +331,30 @@
         startTime: new Date("2025-05-08T20:00:00").getTime(),
         endTime: new Date("2025-05-08T22:00:00").getTime(),
         links: [
-          { title: "SmackDown Stream", url: "https://example.com/smackdownstream.m3u8" }
+          { title: "SmackDown Stream", url: STREAM_URLS['go:smackdownstream'] || 'https://example.com/smackdownstream.m3u8' }
         ]
       }
     ];
 
-    // Initialize Video.js player
-    const player = videojs('my-video', {
-      html5: {
-        hls: {
-          withCredentials: false
-        }
-      },
-      plugins: {
-        httpSourceSelector: {
-          default: 'auto'
-        }
-      }
+    // Initialize video player
+    const player = videojs('player', {
+      controls: true,
+      autoplay: false,
+      preload: 'auto',
+      fluid: true
     });
 
     // Get selected stream and match ID
     const streamUrl = sessionStorage.getItem('selectedStream') || 'https://flixtvlive.vercel.app/tnt1.m3u8';
     const matchId = sessionStorage.getItem('selectedMatchId');
     player.src({ src: streamUrl, type: 'application/x-mpegURL' });
-    player.play().catch(error => {
-      console.error('Error playing stream:', error);
-      alert('Failed to load stream. Please try another link.');
-    });
 
     // Render stream links
     const currentMatch = originalMatches.find(match => match.id === matchId);
     const streamLinksContainer = document.getElementById('streamLinksContainer');
     if (currentMatch) {
       streamLinksContainer.innerHTML = currentMatch.links.map(link => `
-        <a href="#" class="stream-link" data-url="${link.url}">${link.title}</a>
+        <a href="#" class="stream-link" data-url="${link.url}" data-match-id="${match.id}">${link.title}</a>
       `).join('');
     }
 
@@ -297,22 +363,68 @@
       if (e.target.classList.contains('stream-link')) {
         e.preventDefault();
         const url = e.target.dataset.url;
+        const matchId = e.target.dataset.matchId;
         sessionStorage.setItem('selectedStream', url);
-        player.src({ src: url, type: 'application/x-mpegURL' });
-        player.play().catch(error => {
-          console.error('Error playing stream:', error);
-          alert('Failed to load stream. Please try another link.');
-        });
+        sessionStorage.setItem('selectedMatchId', matchId);
+        window.location.reload();
       }
     });
+
+    // Timer functions
+    function getMatchStatus(startTime, endTime) {
+      const now = new Date().getTime();
+      if (now >= startTime && now <= endTime) return 'live';
+      if (now < startTime) return 'upcoming';
+      if (now > endTime) return 'recent';
+      return 'unknown';
+    }
+
+    function formatLocalDateTime(ms) {
+      return new Date(ms).toLocaleString('en-US', {
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
+      });
+    }
+
+    function updateTimers() {
+      const timers = document.querySelectorAll('.timer');
+      timers.forEach(timer => {
+        const matchId = timer.id.split('-')[1];
+        const match = originalMatches.find(m => m.id === matchId);
+        if (match) {
+          const now = new Date().getTime();
+          const status = getMatchStatus(match.startTime, match.endTime);
+          if (status === 'live') {
+            timer.innerHTML = '<span class="live-animation">LIVE</span>';
+          } else if (status === 'upcoming') {
+            const timeUntil = match.startTime - now;
+            if (timeUntil > 0) {
+              const hours = Math.floor(timeUntil / (1000 * 60 * 60));
+              const minutes = Math.floor((timeUntil % (1000 * 60 * 60)) / (1000 * 60));
+              timer.textContent = `Starts: ${formatLocalDateTime(match.startTime)} (in ${hours}h ${minutes}m)`;
+            } else {
+              timer.textContent = `Starts: ${formatLocalDateTime(match.startTime)}`;
+            }
+          } else if (status === 'recent') {
+            timer.textContent = '';
+          }
+        }
+      });
+    }
 
     // Render suggested matches
     const suggestionsContainer = document.getElementById('suggestionsContainer');
     const suggestions = originalMatches.filter(match => match.id !== matchId && match.category === currentMatch?.category);
     if (suggestions.length === 0) {
-      suggestionsContainer.innerHTML = '<h2>Suggested Matches</h2><div class="no-suggestions">No suggestions</div>';
+      suggestionsContainer.innerHTML = '<h2 style="color: #FFD700; width: 100%; text-align: center;">Suggested Matches</h2><div class="no-suggestions">No suggestions</div>';
     } else {
-      suggestionsContainer.innerHTML = '<h2>Suggested Matches</h2>' + suggestions.map(match => {
+      suggestionsContainer.innerHTML = '<h2 style="color: #FFD700; width: 100%; text-align: center;">Suggested Matches</h2>' + suggestions.map(match => {
         const status = getMatchStatus(match.startTime, match.endTime);
         return `
           <div class="match-card">
@@ -345,46 +457,16 @@
       if (e.target.classList.contains('stream-link')) {
         e.preventDefault();
         const url = e.target.dataset.url;
-        const newMatchId = e.target.dataset.matchId;
+        const matchId = e.target.dataset.matchId;
         sessionStorage.setItem('selectedStream', url);
-        sessionStorage.setItem('selectedMatchId', newMatchId);
+        sessionStorage.setItem('selectedMatchId', matchId);
         window.location.reload();
       }
     });
 
-    // Timer functions (same as index.html)
-    function getMatchStatus(startTime, endTime) {
-      const now = new Date().getTime();
-      if (now >= startTime && now <= endTime) return 'live';
-      if (now < startTime) return 'upcoming';
-      if (now > endTime) return 'recent';
-      return 'unknown';
-    }
-
-    function updateTimers() {
-      originalMatches.forEach(match => {
-        const timerElement = document.querySelector(`#timer-${match.id}`);
-        if (timerElement) {
-          const now = new Date().getTime();
-          const status = getMatchStatus(match.startTime, match.endTime);
-          if (status === 'live') {
-            const timeLeft = match.endTime - now;
-            const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-            timerElement.textContent = `Ends in ${minutes}m ${seconds}s`;
-          } else if (status === 'upcoming') {
-            const timeUntil = match.startTime - now;
-            const hours = Math.floor(timeUntil / (1000 * 60 * 60));
-            const minutes = Math.floor((timeUntil % (1000 * 60 * 60)) / (1000 * 60));
-            timerElement.textContent = `Starts in ${hours}h ${minutes}m`;
-          } else if (status === 'recent') {
-            timerElement.textContent = 'Match ended';
-          }
-        }
-      });
-    }
-
+    // Update timers every second
     setInterval(updateTimers, 1000);
+    updateTimers();
   </script>
 </body>
 </html>
