@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Event Player</title>
-  <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css">
+  <title>Stream Player</title>
+  <link href="https://cdn.plyr.io/3.7.8/plyr.css" rel="stylesheet" />
   <style>
     body {
       margin: 0;
@@ -15,93 +15,82 @@
     }
 
     .container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 20px;
       max-width: 1200px;
       margin: 0 auto;
+      padding: 20px;
+    }
+
+    nav {
+      background: #2B2F30;
+      padding: 10px;
+      text-align: center;
+    }
+
+    nav a {
+      color: #FFD700;
+      margin: 0 15px;
+      text-decoration: none;
     }
 
     .player-container {
-      width: 100%;
       max-width: 800px;
-      margin-bottom: 20px;
+      margin: 20px auto;
     }
 
     .plyr {
-      width: 100%;
-      height: auto;
-      aspect-ratio: 16 / 9;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     }
 
-    .stream-links-container {
+    .stream-links {
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
       justify-content: center;
-      margin: 20px 0;
+      margin: 10px 0;
     }
 
     .stream-link {
       padding: 10px 20px;
-      background: #FFD700;
-      color: #1C2526;
+      background: #2B2F30;
+      border: 1px solid #FFD700;
+      color: #FFD700;
       text-decoration: none;
       border-radius: 5px;
-      font-size: 16px;
       transition: background 0.3s;
     }
 
-    .stream-link:hover {
-      background: #D4A017;
+    .stream-link.active, .stream-link:hover {
+      background: #FFD700;
+      color: #1C2526;
     }
 
-    .suggestions-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 20px;
-      width: 100%;
+    .match-info {
+      text-align: center;
+      margin: 20px 0;
     }
 
-    .match-card {
-      background: #1C2526;
-      border: 2px solid #FFD700;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      cursor: pointer;
-      position: relative;
-      font-family: 'Georgia', serif;
-    }
-
-    .match-card:hover {
-      transform: translateY(-5px) rotate(1deg);
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
-    }
-
-    .match-header {
-      background: #2B2F30;
+    .match-info h2 {
       color: #FFD700;
-      padding: 10px;
-      text-align: center;
-      font-weight: bold;
-      font-size: 16px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
+      font-family: 'Georgia', serif;
+      margin: 10px 0;
     }
 
-    .match-content {
-      background: #2B2F30;
-      padding: 15px;
-      text-align: center;
+    .league-logo {
+      width: 50px;
+      height: 50px;
+      object-fit: contain;
+      border: 3px solid #FFD700;
+      border-radius: 50%;
+      background: #FFFFFF;
+      padding: 4px;
     }
 
     .team-container {
       display: flex;
-      justify-content: space-between;
+      justify-content: center;
       align-items: center;
+      gap: 20px;
       margin: 10px 0;
     }
 
@@ -110,7 +99,6 @@
       flex-direction: column;
       align-items: center;
       gap: 6px;
-      max-width: 40%;
     }
 
     .team img {
@@ -127,72 +115,66 @@
       font-weight: bold;
     }
 
-    .league-logo {
-      width: 50px;
-      height: 50px;
-      object-fit: contain;
-      border: 3px solid #FFD700;
-      border-radius: 50%;
-      background: #FFFFFF;
-      padding: 4px;
-      margin: 0 auto 10px;
-    }
-
     .timer {
       font-size: 13px;
       color: #FFFFFF;
       font-weight: bold;
-      margin: 8px 0;
-      min-height: 18px;
     }
 
-    .live-animation {
-      display: inline-block;
-      color: #FF0000;
-      font-weight: bold;
+    .suggestions {
+      margin-top: 30px;
+    }
+
+    .suggestions h3 {
+      color: #FFD700;
+      text-align: center;
+      font-family: 'Georgia', serif;
+      margin-bottom: 15px;
+    }
+
+    .suggestions-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .suggestion-card {
+      background: #2B2F30;
+      border: 2px solid #FFD700;
+      border-radius: 12px;
+      padding: 15px;
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .suggestion-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+    }
+
+    .suggestion-card img {
+      width: 40px;
+      height: 40px;
+      object-fit: contain;
+      border: 2px solid #FFD700;
+      border-radius: 50%;
+      margin: 0 10px;
+    }
+
+    .suggestion-card span {
       font-size: 14px;
-      text-shadow: 0 0 8px #FFD700;
-      animation: pulse 1.5s infinite;
-    }
-
-    @keyframes pulse {
-      0% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.1); opacity: 0.7; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-
-    .status {
-      text-align: center;
-      color: #00FF00;
-      font-weight: bold;
-      font-size: 13px;
-      margin: 8px 0;
-    }
-
-    .links-container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      justify-content: center;
-      margin-top: 10px;
-    }
-
-    .no-suggestions {
-      text-align: center;
       color: #FFFFFF;
-      opacity: 0.7;
-      font-size: 16px;
-      margin: 20px 0;
+      font-weight: bold;
     }
 
-    /* Responsive adjustments for non-card elements */
     @media (max-width: 768px) {
       .container {
-        padding: 15px;
+        padding: 10px;
       }
 
       .player-container {
-        max-width: 100%;
+        margin: 10px;
       }
 
       .stream-link {
@@ -202,138 +184,80 @@
     }
 
     @media (max-width: 480px) {
-      .container {
-        padding: 10px;
+      .team-container {
+        flex-direction: column;
+    "src": "src" "src": "src" gap: 10px;
       }
 
-      .stream-link {
-        padding: 6px 12px;
-        font-size: 13px;
+      .suggestion-card {
+        grid-template-columns: 1fr;
       }
     }
   </style>
 </head>
 <body>
-  <nav style="background: #2B2F30; padding: 10px; text-align: center;">
-    <a href="/" style="color: #FFD700; margin: 0 15px; text-decoration: none;">Home</a>
-    <a href="/events" style="color: #FFD700; margin: 0 15px; text-decoration: none;">Live Events</a>
-    <a href="/channels" style="color: #FFD700; margin: 0 15px; text-decoration: none;">Sports Channels</a>
+  <nav>
+    <a href="/">Home</a>
+    <a href="/events">Live Events</a>
+    <a href="/channels">Sports Channels</a>
   </nav>
 
   <div class="container">
     <div class="player-container">
-      <video id="player" class="plyr" controls>
-        <source src="" type="application/x-mpegURL">
-      </video>
+      <video id="player" playsinline controls></video>
+      <div class="stream-links" id="streamLinks"></div>
+      <div class="match-info">
+        <img src="" alt="League Logo" class="league-logo" id="leagueLogo">
+        <h2 id="matchTitle"></h2>
+        <div class="team-container">
+          <div class="team">
+            <img src="" alt="Team A" id="teamALogo">
+            <span id="teamAName"></span>
+          </div>
+          <div class="team">
+            <span id="teamBName"></span>
+            <img src="" alt="Team B" id="teamBLogo">
+          </div>
+        </div>
+        <div class="timer" id="timer"></div>
+      </div>
     </div>
-    <div class="stream-links-container" id="streamLinksContainer"></div>
-    <div class="suggestions-container" id="suggestionsContainer">
-      <h2 style="color: #FFD700; width: 100%; text-align: center;">Suggested Matches</h2>
+    <div class="suggestions">
+      <h3>Suggested Matches</h3>
+      <div class="suggestions-container" id="suggestionsContainer"></div>
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-  <script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
+  <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
   <script type="module">
-    // Import matches from separate file
     import matches from '/data/matches.js';
 
-    // Stream URL mappings for go: URLs (replace with real URLs)
-    const STREAM_URLS = {
-      'go:skymain': 'https://example.com/skymain.m3u8',
-      'go:opt1': 'https://example.com/optus1.m3u8',
-      'go:opt3': 'https://example.com/optus3.m3u8',
-      'go:skyf1': 'https://example.com/skyf1.m3u8',
-      'go:laligafhd': 'https://example.com/laligafhd.m3u8',
-      'go:sliga': 'https://example.com/sliga.m3u8',
-      'go:motogpstream': 'https://example.com/motogpstream.m3u8',
-      'go:f1stream': 'https://example.com/f1stream.m3u8',
-      'go:smackdownstream': 'https://example.com/smackdownstream.m3u8',
-      'go:willow2': 'https://example.com/willow2.m3u8'
-    };
-
-    // Initialize Plyr player with hls.js
-    const video = document.getElementById('player');
-    const streamUrl = sessionStorage.getItem('selectedStream') || 'https://flixtvlive.vercel.app/tnt1.m3u8';
-
-    if (Hls.isSupported()) {
-      const hls = new Hls();
-      hls.loadSource(streamUrl);
-      hls.attachMedia(video);
-      const player = new Plyr(video, {
-        controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'pip', 'fullscreen'],
-        settings: ['quality'],
-        quality: {
-          default: 'auto',
-          options: ['auto']
-        },
-        autoplay: false
-      });
-
-      // Update quality options dynamically
-      hls.on(Hls.Events.MANIFEST_PARSED, (event, data) => {
-        const levels = data.levels.map((level, index) => ({
-          height: level.height || 'auto',
-          id: index
-        }));
-        const qualityOptions = levels.map(level => level.height === 'auto' ? 'auto' : level.height);
-        player.quality = {
-          default: 'auto',
-          options: qualityOptions,
-          forced: qualityOptions.length > 1,
-          onChange: (quality) => {
-            const levelIndex = levels.findIndex(level => level.height === quality || (quality === 'auto' && level.height === 'auto'));
-            hls.currentLevel = levelIndex;
-          }
-        };
-      });
-    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-      // Native HLS support (e.g., Safari)
-      video.src = streamUrl;
-      const player = new Plyr(video, {
-        controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'pip', 'fullscreen'],
-        settings: ['quality'],
-        quality: {
-          default: 'auto',
-          options: ['auto']
-        },
-        autoplay: false
-      });
-    } else {
-      console.error('HLS is not supported in this browser');
-    }
-
-    // Render stream links
-    const matchId = sessionStorage.getItem('selectedMatchId');
-    const currentMatch = matches.find(match => match.id === matchId);
-    const streamLinksContainer = document.getElementById('streamLinksContainer');
-    if (currentMatch && currentMatch.links.length > 0) {
-      streamLinksContainer.innerHTML = currentMatch.links.map(link => `
-        <a href="#" class="stream-link" data-url="${link.url}" data-match-id="${currentMatch.id}">${link.title}</a>
-      `).join('');
-    } else {
-      streamLinksContainer.innerHTML = '<p style="color: #FFFFFF; opacity: 0.7;">No stream links available</p>';
-    }
-
-    // Handle stream link clicks
-    streamLinksContainer.addEventListener('click', (e) => {
-      if (e.target.classList.contains('stream-link')) {
-        e.preventDefault();
-        const url = e.target.dataset.url;
-        const matchId = e.target.dataset.matchId;
-        sessionStorage.setItem('selectedStream', url);
-        sessionStorage.setItem('selectedMatchId', matchId);
-        window.location.reload();
-      }
+    const player = new Plyr('#player', {
+      controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen', 'pip'],
+      settings: []
     });
 
-    // Timer functions
-    function getMatchStatus(startTime, endTime) {
-      const now = new Date().getTime();
-      if (now >= startTime && now <= endTime) return 'live';
-      if (now < startTime) return 'upcoming';
-      if (now > endTime) return 'recent';
-      return 'unknown';
+    let currentStream = sessionStorage.getItem('selectedStream') || '';
+    const matchId = sessionStorage.getItem('selectedMatchId');
+    const match = matches.find(m => m.id === matchId);
+
+    function updatePlayerSource(url) {
+      player.source = {
+        type: 'video',
+        sources: [{
+          src: url,
+          type: 'video/mp4'
+        }]
+      };
+      currentStream = url;
+      updateStreamLinks();
+    }
+
+    function updateStreamLinks() {
+      const streamLinks = document.getElementById('streamLinks');
+      streamLinks.innerHTML = match.links.map(link => `
+        <a href="#" class="stream-link ${link.url === currentStream ? 'active' : ''}" data-url="${link.url}">${link.title}</a>
+      `).join('');
     }
 
     function formatLocalDateTime(ms) {
@@ -349,81 +273,83 @@
       });
     }
 
-    function updateTimers() {
-      const timers = document.querySelectorAll('.timer');
-      timers.forEach(timer => {
-        const matchId = timer.id.split('-')[1];
-        const match = matches.find(m => m.id === matchId);
-        if (match) {
-          const now = new Date().getTime();
-          const status = getMatchStatus(match.startTime, match.endTime);
-          if (status === 'live') {
-            timer.innerHTML = '<span class="live-animation">LIVE</span>';
-          } else if (status === 'upcoming') {
-            const timeUntil = match.startTime - now;
-            if (timeUntil > 0) {
-              const hours = Math.floor(timeUntil / (1000 * 60 * 60));
-              const minutes = Math.floor((timeUntil % (1000 * 60 * 60)) / (1000 * 60));
-              timer.textContent = `Starts: ${formatLocalDateTime(match.startTime)} (in ${hours}h ${minutes}m)`;
-            } else {
-              timer.textContent = `Starts: ${formatLocalDateTime(match.startTime)}`;
-            }
-          } else if (status === 'recent') {
-            timer.textContent = '';
-          }
+    function getMatchStatus(startTime, endTime) {
+      const now = new Date().getTime();
+      if (now >= startTime && now <= endTime) return 'live';
+      if (now < startTime) return 'upcoming';
+      if (now > endTime) return 'recent';
+      return 'unknown';
+    }
+
+    function updateTimer() {
+      if (!match) return;
+      const timerElement = document.getElementById('timer');
+      const now = new Date().getTime();
+      const status = getMatchStatus(match.startTime, match.endTime);
+      if (status === 'live') {
+        timerElement.textContent = 'LIVE';
+      } else if (status === 'upcoming') {
+        const timeUntil = match.startTime - now;
+        if (timeUntil > 0) {
+          const hours = Math.floor(timeUntil / (1000 * 60 * 60));
+          const minutes = Math.floor((timeUntil % (1000 * 60 * 60)) / (1000 * 60));
+          timerElement.textContent = `Upcoming: ${formatLocalDateTime(match.startTime)} (in ${hours}h ${minutes}m)`;
+        } else {
+          timerElement.textContent = `Upcoming: ${formatLocalDateTime(match.startTime)}`;
         }
-      });
+      } else {
+        timerElement.textContent = 'Recent';
+      }
     }
 
-    // Render suggested matches
-    const suggestionsContainer = document.getElementById('suggestionsContainer');
-    const suggestions = currentMatch ? matches.filter(match => match.category === currentMatch.category && match.id !== matchId) : [];
-    if (!currentMatch || suggestions.length === 0) {
-      suggestionsContainer.innerHTML = '<h2 style="color: #FFD700; width: 100%; text-align: center;">Suggested Matches</h2><div class="no-suggestions">No suggestions</div>';
-    } else {
-      suggestionsContainer.innerHTML = '<h2 style="color: #FFD700; width: 100%; text-align: center;">Suggested Matches</h2>' + suggestions.map(match => {
-        const status = getMatchStatus(match.startTime, match.endTime);
-        return `
-          <div class="match-card">
-            <div class="match-header">${match.title}</div>
-            <div class="match-content">
-              <img src="${match.leagueLogo}" alt="League Logo" class="league-logo">
-              <div class="team-container">
-                <div class="team">
-                  <img src="${match.teamA.logo}" alt="${match.teamA.name}">
-                  <span>${match.teamA.name}</span>
-                </div>
-                <div class="team">
-                  <span>${match.teamB.name}</span>
-                  <img src="${match.teamB.logo}" alt="${match.teamB.name}">
-                </div>
+    if (match) {
+      document.getElementById('matchTitle').textContent = match.title;
+      document.getElementById('leagueLogo').src = match.leagueLogo;
+      document.getElementById('teamAName').textContent = match.teamA.name;
+      document.getElementById('teamALogo').src = match.teamA.logo;
+      document.getElementById('teamBName').textContent = match.teamB.name;
+      document.getElementById('teamBLogo').src = match.teamB.logo;
+      updatePlayerSource(currentStream || match.links[0].url);
+      updateTimer();
+      setInterval(updateTimer, 1000);
+
+      const suggestionsContainer = document.getElementById('suggestionsContainer');
+      const suggestions = matches.filter(m => m.id !== matchId && m.category === match.category);
+      suggestionsContainer.innerHTML = suggestions.length === 0
+        ? '<div style="text-align: center; color: #FFFFFF; opacity: 0.7;">No suggested matches</div>'
+        : suggestions.map(s => `
+            <div class="suggestion-card" data-match-id="${s.id}">
+              <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+                <img src="${s.teamA.logo}" alt="${s.teamA.name}">
+                <span>vs</span>
+                <img src="${s.teamB.logo}" alt="${s.teamB.name}">
               </div>
-              <div class="timer" id="timer-${match.id}"></div>
-              <div class="status">${status.charAt(0).toUpperCase() + status.slice(1)}</div>
-              <div class="links-container">
-                ${match.links.map(link => `<a href="#" class="stream-link" data-url="${link.url}" data-match-id="${match.id}">${link.title}</a>`).join('')}
-              </div>
+              <span>${s.title}</span>
             </div>
-          </div>
-        `;
-      }).join('');
+          `).join('');
+    } else {
+      document.getElementById('matchTitle').textContent = 'Match not found';
+      document.getElementById('streamLinks').innerHTML = '<div style="text-align: center; color: #FFFFFF; opacity: 0.7;">No streams available</div>';
     }
 
-    // Handle suggestion stream link clicks
-    suggestionsContainer.addEventListener('click', (e) => {
+    document.getElementById('streamLinks').addEventListener('click', (e) => {
       if (e.target.classList.contains('stream-link')) {
         e.preventDefault();
         const url = e.target.dataset.url;
-        const matchId = e.target.dataset.matchId;
-        sessionStorage.setItem('selectedStream', url);
-        sessionStorage.setItem('selectedMatchId', matchId);
-        window.location.reload();
+        updatePlayerSource(url);
+        sessionStorage.setItem('selectedStream', url); // Update sessionStorage
       }
     });
 
-    // Update timers every second
-    setInterval(updateTimers, 1000);
-    updateTimers();
+    document.getElementById('suggestionsContainer').addEventListener('click', (e) => {
+      const card = e.target.closest('.suggestion-card');
+      if (card) {
+        const newMatchId = card.dataset.matchId;
+        sessionStorage.setItem('selectedMatchId', newMatchId);
+        sessionStorage.setItem('selectedStream', matches.find(m => m.id === newMatchId).links[0].url);
+        window.location.href = '/events/player.html'; // Reload for new match
+      }
+    });
   </script>
 </body>
 </html>
