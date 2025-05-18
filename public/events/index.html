@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Live Events</title>
-  <!-- NProgress CSS -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.css" integrity="sha512-42kB9yDlYiCEfx2xVwq0q7hT4uf26Z2J+IIf65hFrshxS3Ujjr27ljo8hX8rJ/4FlZTL9t28a/a6E4wDQMHLrPQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <!-- NProgress CSS (local) -->
+  <link rel="stylesheet" href="/nprogress.min.css">
   <style>
     body {
       margin: 0;
@@ -305,6 +305,11 @@
         padding: 10px;
       }
     }
+
+    /* NProgress bar color */
+    #nprogress .bar {
+      background: #FFD700;
+    }
   </style>
 </head>
 <body>
@@ -337,8 +342,8 @@
     </div>
   </div>
 
-  <!-- NProgress JS -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.js" integrity="sha512-bUg5gaqBVaXIJNuebamJ6uex//mjxPk8kljQTdM1Sw2Y2fE2QjVxw+4+eq0EtmS/oOguPDzFjSg71fF0SbCbrlA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <!-- NProgress JS (local) -->
+  <script src="/nprogress.min.js"></script>
   <script type="module">
     // Import matches from separate file
     import matches from '/data/matches.js';
@@ -358,11 +363,15 @@
     };
 
     // Loading bar for initial page load
-    NProgress.configure({ showSpinner: false, speed: 500 });
-    NProgress.start();
-    window.onload = () => {
-      setTimeout(() => NProgress.done(), 500); // Simulate load time
-    };
+    try {
+      NProgress.configure({ showSpinner: false, speed: 500 });
+      NProgress.start();
+      window.onload = () => {
+        setTimeout(() => NProgress.done(), 500); // Simulate load time
+      };
+    } catch (e) {
+      console.warn('NProgress failed to load:', e);
+    }
 
     // Filter and render matches
     let filteredMatches = [...matches];
@@ -527,39 +536,42 @@
       }
     });
 
+    // Modal close button
     document.querySelector('.modal-content .close-button').addEventListener('click', closeModal);
 
     // Dropdown toggle
     const dropdownButton = document.querySelector('.dropdown-button');
     const dropdownContent = document.getElementById('dropdownContent');
-    dropdownButton.addEventListener('click', () => {
-      dropdownContent.classList.toggle('show');
-    });
+    if (dropdownButton && dropdownContent) {
+      dropdownButton.addEventListener('click', () => {
+        dropdownContent.classList.toggle('show');
+      });
 
-    // Dropdown filter selection
-    dropdownContent.addEventListener('click', (e) => {
-      if (e.target.classList.contains('dropdown-item')) {
-        e.preventDefault();
-        const filter = e.target.dataset.filter;
-        filterMatches(filter);
-        dropdownContent.classList.remove('show');
-        dropdownButton.textContent = e.target.textContent.split(' (')[0]; // Update button text
-        // Reset main filter buttons
-        document.querySelectorAll('.filter-button').forEach(btn => btn.classList.remove('active'));
-        document.querySelector('.filter-button[data-filter="all"]').classList.add('active');
-      }
-    });
+      // Dropdown filter selection
+      dropdownContent.addEventListener('click', (e) => {
+        if (e.target.classList.contains('dropdown-item')) {
+          e.preventDefault();
+          const filter = e.target.dataset.filter;
+          filterMatches(filter);
+          dropdownContent.classList.remove('show');
+          dropdownButton.textContent = e.target.textContent.split(' (')[0]; // Update button text
+          // Reset main filter buttons
+          document.querySelectorAll('.filter-button').forEach(btn => btn.classList.remove('active'));
+          document.querySelector('.filter-button[data-filter="all"]').classList.add('active');
+        }
+      });
 
-    // Close dropdown if clicking outside
-    document.addEventListener('click', (e) => {
-      if (!e.target.closest('.category-dropdown')) {
-        dropdownContent.classList.remove('show');
-      }
-    });
+      // Close dropdown if clicking outside
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('.category-dropdown')) {
+          dropdownContent.classList.remove('show');
+        }
+      });
+    }
 
     // Initialize
     setInterval(updateTimers, 1000);
-    filterMatches('all');
+    renderMatches(matches); // Initial render
     updateDropdown();
   </script>
 </body>
