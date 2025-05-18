@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Event Player</title>
-  <link href="https://vjs.zencdn.net/7.20.3/video-js.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css">
   <style>
     body {
       margin: 0;
@@ -29,7 +29,7 @@
       margin-bottom: 20px;
     }
 
-    .video-js {
+    .plyr {
       width: 100%;
       height: auto;
       aspect-ratio: 16 / 9;
@@ -222,7 +222,7 @@
 
   <div class="container">
     <div class="player-container">
-      <video id="player" class="video-js vjs-default-skin" controls preload="auto">
+      <video id="player" class="plyr" controls>
         <source src="" type="application/x-mpegURL">
       </video>
     </div>
@@ -232,7 +232,8 @@
     </div>
   </div>
 
-  <script src="https://vjs.zencdn.net/7.20.3/video.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
   <script>
     // Stream URL mappings for go: URLs (replace with real URLs)
     const STREAM_URLS = {
@@ -333,23 +334,48 @@
         links: [
           { title: "SmackDown Stream", url: STREAM_URLS['go:smackdownstream'] || 'https://example.com/smackdownstream.m3u8' }
         ]
+      },
+      {
+        id: "match-7",
+        category: "Football",
+        title: "Football | Premier League",
+        leagueLogo: "https://upload.wikimedia.org/wikipedia/en/thumb/f/f2/Premier_League_Logo.svg/1200px-Premier_League_Logo.svg.png",
+        teamA: { name: "Manchester United", logo: "https://img.sofascore.com/api/v1/team/35/image" },
+        teamB: { name: "Liverpool", logo: "https://img.sofascore.com/api/v1/team/44/image" },
+        startTime: new Date("2025-05-09T15:00:00").getTime(),
+        endTime: new Date("2025-05-09T17:00:00").getTime(),
+        links: [
+          { title: "TNT Sports", url: "https://flixtvlive.vercel.app/tnt2.m3u8" },
+          { title: "ITV 1", url: "https://epltv1.github.io/itv1.m3u8" }
+        ]
       }
     ];
 
-    // Initialize video player
-    const player = videojs('player', {
-      controls: true,
-      autoplay: false,
-      preload: 'auto',
-      fluid: true
-    });
-
-    // Get selected stream and match ID
+    // Initialize Plyr player with hls.js
+    const video = document.getElementById('player');
     const streamUrl = sessionStorage.getItem('selectedStream') || 'https://flixtvlive.vercel.app/tnt1.m3u8';
-    const matchId = sessionStorage.getItem('selectedMatchId');
-    player.src({ src: streamUrl, type: 'application/x-mpegURL' });
+
+    if (Hls.isSupported()) {
+      const hls = new Hls();
+      hls.loadSource(streamUrl);
+      hls.attachMedia(video);
+      const player = new Plyr(video, {
+        controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
+        autoplay: false
+      });
+    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      // Native HLS support (e.g., Safari)
+      video.src = streamUrl;
+      const player = new Plyr(video, {
+        controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
+        autoplay: false
+      });
+    } else {
+      console.error('HLS is not supported in this browser');
+    }
 
     // Render stream links
+    const matchId = sessionStorage.getItem('selectedMatchId');
     const currentMatch = originalMatches.find(match => match.id === matchId);
     const streamLinksContainer = document.getElementById('streamLinksContainer');
     if (currentMatch) {
