@@ -420,8 +420,8 @@
 
     // Render suggested matches
     const suggestionsContainer = document.getElementById('suggestionsContainer');
-    const suggestions = originalMatches.filter(match => match.id !== matchId && match.category === currentMatch?.category);
-    if (suggestions.length === 0) {
+    const suggestions = currentMatch ? originalMatches.filter(match => match.category === currentMatch.category && match.id !== matchId) : [];
+    if (!currentMatch || suggestions.length === 0) {
       suggestionsContainer.innerHTML = '<h2 style="color: #FFD700; width: 100%; text-align: center;">Suggested Matches</h2><div class="no-suggestions">No suggestions</div>';
     } else {
       suggestionsContainer.innerHTML = '<h2 style="color: #FFD700; width: 100%; text-align: center;">Suggested Matches</h2>' + suggestions.map(match => {
