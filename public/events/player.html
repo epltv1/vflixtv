@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stream Player</title>
+  <link rel="stylesheet" href="https://vjs.zencdn.net/8.10.0/video-js.css">
+  <link rel="stylesheet" href="https://unpkg.com/videojs-contrib-hls@5.15.0/dist/videojs-contrib-hls.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/videojs-http-source-selector@1.1.6/dist/videojs-http-source-selector.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #1C2526;
+      color: #FFFFFF;
+    }
+    .video-player-container {
+      width: 100%;
+      max-width: 800px;
+      margin: 20px auto;
+      position: relative;
+    }
+    #my-video {
+      width: 100%;
+      border-radius: 10px;
+      background: #000;
+    }
+    .vjs-http-source-selector {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 10;
+    }
+  </style>
+</head>
+<body>
+  <nav style="background: #2B2F30; padding: 10px; text-align: center;">
+    <a href="/" style="color: #FFD700; margin: 0 15px; text-decoration: none;">Home</a>
+    <a href="/events" style="color: #FFD700; margin: 0 15px; text-decoration: none;">Live Events</a>
+    <a href="/channels" style="color: #FFD700; margin: 0 15px; text-decoration: none;">Sports Channels</a>
+  </nav>
+
+  <div class="video-player-container">
+    <video-js id="my-video" class="video-js vjs-default-skin" controls preload="auto" width="100%" height="auto" data-setup='{"fluid": true}'>
+      <source src="" type="application/x-mpegURL">
+    </video-js>
+  </div>
+
+  <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
+  <script src="https://unpkg.com/videojs-contrib-hls@5.15.0/dist/videojs-contrib-hls.min.js"></script>
+  <script src="https://unpkg.com/videojs-http-source-selector@1.1.6/dist/videojs-http-source-selector.min.js"></script>
+  <script>
+    // Initialize Video.js player
+    const player = videojs('my-video', {
+      html5: {
+        hls: {
+          withCredentials: false
+        }
+      },
+      plugins: {
+        httpSourceSelector: {
+          default: 'auto'
+        }
+      }
+    });
+
+    // Get stream URL from query parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const streamUrl = urlParams.get('stream') || 'https://flixtvlive.vercel.app/tnt1.m3u8'; // Fallback URL
+
+    // Set and play the stream
+    player.src({ src: streamUrl, type: 'application/x-mpegURL' });
+    player.play().catch(error => {
+      console.error('Error playing stream:', error);
+      alert('Failed to load stream. Please try another link.');
+    });
+  </script>
+</body>
+</html>
