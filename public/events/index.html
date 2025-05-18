@@ -245,6 +245,20 @@
   <script src="https://www.gstatic.com/cast/sdk/libs/sender/1.0/cast_framework.js"></script>
   <script src="https://unpkg.com/videojs-chromecast@1.0.2/dist/videojs-chromecast.min.js"></script>
   <script>
+    // Stream URL mappings for go: URLs (replace with real URLs)
+    const STREAM_URLS = {
+      'go:skymain': 'https://example.com/skymain.m3u8',
+      'go:opt1': 'https://example.com/optus1.m3u8',
+      'go:opt3': 'https://example.com/optus3.m3u8',
+      'go:skyf1': 'https://example.com/skyf1.m3u8',
+      'go:laligafhd': 'https://example.com/laligafhd.m3u8',
+      'go:sliga': 'https://example.com/sliga.m3u8',
+      'go:motogpstream': 'https://example.com/motogpstream.m3u8',
+      'go:f1stream': 'https://example.com/f1stream.m3u8',
+      'go:smackdownstream': 'https://example.com/smackdownstream.m3u8',
+      'go:willow2': 'https://example.com/willow2.m3u8'
+    };
+
     // Initialize Video.js player
     const player = videojs('my-video', {
       html5: {
@@ -261,20 +275,6 @@
         }
       }
     });
-
-    // Stream URL mappings for go: URLs (replace with real URLs)
-    const STREAM_URLS = {
-      'go:skymain': 'https://example.com/skymain.m3u8',
-      'go:opt1': 'https://example.com/optus1.m3u8',
-      'go:opt3': 'https://example.com/optus3.m3u8',
-      'go:skyf1': 'https://example.com/skyf1.m3u8',
-      'go:laligafhd': 'https://example.com/laligafhd.m3u8',
-      'go:sliga': 'https://example.com/sliga.m3u8',
-      'go:motogpstream': 'https://example.com/motogpstream.m3u8',
-      'go:f1stream': 'https://example.com/f1stream.m3u8',
-      'go:smackdownstream': 'https://example.com/smackdownstream.m3u8',
-      'go:willow2': 'https://example.com/willow2.m3u8'
-    };
 
     // Matches data
     const originalMatches = [
@@ -459,13 +459,8 @@
       if (e.target.classList.contains('stream-link')) {
         e.preventDefault();
         const url = e.target.dataset.url;
-        try {
-          player.src({ src: url, type: 'application/x-mpegURL' });
-          player.play();
-        } catch (error) {
-          console.error('Error playing stream:', error);
-          alert('Failed to load stream. Please try another link.');
-        }
+        player.src({ src: url, type: 'application/x-mpegURL' });
+        player.play();
       }
     });
 
