@@ -22,6 +22,29 @@
       margin: 0 auto;
     }
 
+    .filter-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+      justify-content: center;
+    }
+
+    .filter-button {
+      padding: 10px 20px;
+      border: 1px solid #FFD700;
+      background: #2B2F30;
+      color: #FFD700;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+
+    .filter-button.active, .filter-button:hover {
+      background: #FFD700;
+      color: #1C2526;
+    }
+
     .matches-container {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -134,16 +157,40 @@
       margin: 8px 0;
     }
 
-    .links-container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
       justify-content: center;
-      margin-top: 10px;
+      align-items: center;
+      z-index: 1000;
     }
 
-    .stream-link {
-      padding: 10px 20px;
+    .modal-content {
+      background: #2B2F30;
+      border: 2px solid #FFD700;
+      border-radius: 10px;
+      padding: 20px;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+      color: #FFFFFF;
+    }
+
+    .modal-content h3 {
+      margin: 0 0 15px;
+      color: #FFD700;
+      font-family: 'Georgia', serif;
+    }
+
+    .modal-content .stream-link {
+      display: block;
+      padding: 10px;
+      margin: 10px 0;
       background: #FFD700;
       color: #1C2526;
       text-decoration: none;
@@ -152,27 +199,35 @@
       transition: background 0.3s;
     }
 
-    .stream-link:hover {
+    .modal-content .stream-link:hover {
       background: #D4A017;
     }
 
-    .no-matches {
-      text-align: center;
+    .modal-content .close-button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      background: #FF0000;
       color: #FFFFFF;
-      opacity: 0.7;
-      font-size: 16px;
-      margin: 20px 0;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .modal-content .close-button:hover {
+      background: #CC0000;
     }
 
     /* Responsive adjustments for non-card elements */
     @media (max-width: 768px) {
-      .container {
-        padding: 15px;
-      }
-
-      .stream-link {
+      .filter-button {
         padding: 8px 15px;
         font-size: 14px;
+      }
+
+      .modal-content {
+        width: 95%;
+        padding: 15px;
       }
     }
 
@@ -181,9 +236,12 @@
         padding: 10px;
       }
 
-      .stream-link {
-        padding: 6px 12px;
-        font-size: 13px;
+      .filter-container {
+        gap: 5px;
+      }
+
+      .modal-content {
+        padding: 10px;
       }
     }
   </style>
@@ -196,15 +254,50 @@
   </nav>
 
   <div class="container">
-    <h2 style="color: #FFD700; width: 100%; text-align: center;">Live Events</h2>
+    <div class="filter-container" id="filterContainer">
+      <button class="filter-button active" data-filter="all">All</button>
+      <button class="filter-button" data-filter="live">Live</button>
+      <button class="filter-button" data-filter="upcoming">Upcoming</button>
+      <button class="filter-button" data-filter="recent">Recent</button>
+      <button class="filter-button" data-filter="Football">Football</button>
+      <button class="filter-button" data-filter="Cricket">Cricket</button>
+      <button class="filter-button" data-filter="Motorsport">Motorsport</button>
+      <button class="filter-button" data-filter="Wrestling">Wrestling</button>
+    </div>
+
     <div class="matches-container" id="matchesContainer"></div>
+  </div>
+
+  <!-- Modal for stream links -->
+  <div class="modal" id="streamModal">
+    <div class="modal-content">
+      <h3 id="modalTitle"></h3>
+      <div id="modalLinks"></div>
+      <button class="close-button" onclick="closeModal()">Close</button>
+    </div>
   </div>
 
   <script type="module">
     // Import matches from separate file
     import matches from '/data/matches.js';
 
-    // Timer functions
+    // Stream URL mappings for go: URLs (replace with real URLs)
+    const STREAM_URLS = {
+      'go:skymain': 'https://example.com/skymain.m3u8',
+      'go:opt1': 'https://example.com/optus1.m3u8',
+      'go:opt3': 'https://example.com/optus3.m3u8',
+      'go:skyf1': 'https://example.com/skyf1.m3u8',
+      'go:laligafhd': 'https://example.com/laligafhd.m3u8',
+      'go:sliga': 'https://example.com/sliga.m3u8',
+      'go:motogpstream': 'https://example.com/motogpstream.m3u8',
+      'go:f1stream': 'https://example.com/f1stream.m3u8',
+      'go:smackdownstream': 'https://example.com/smackdownstream.m3u8',
+      'go:willow2': 'https://example.com/willow2.m3u8'
+    };
+
+    // Filter and render matches
+    let filteredMatches = [...matches];
+
     function getMatchStatus(startTime, endTime) {
       const now = new Date().getTime();
       if (now >= startTime && now <= endTime) return 'live';
@@ -227,66 +320,106 @@
     }
 
     function updateTimers() {
-      const timers = document.querySelectorAll('.timer');
-      timers.forEach(timer => {
-        const matchId = timer.id.split('-')[1];
-        const match = matches.find(m => m.id === matchId);
-        if (match) {
+      filteredMatches.forEach(match => {
+        const timerElement = document.querySelector(`#timer-${match.id}`);
+        if (timerElement) {
           const now = new Date().getTime();
           const status = getMatchStatus(match.startTime, match.endTime);
           if (status === 'live') {
-            timer.innerHTML = '<span class="live-animation">LIVE</span>';
+            timerElement.innerHTML = '<span class="live-animation">LIVE</span>';
           } else if (status === 'upcoming') {
             const timeUntil = match.startTime - now;
             if (timeUntil > 0) {
               const hours = Math.floor(timeUntil / (1000 * 60 * 60));
               const minutes = Math.floor((timeUntil % (1000 * 60 * 60)) / (1000 * 60));
-              timer.textContent = `Starts: ${formatLocalDateTime(match.startTime)} (in ${hours}h ${minutes}m)`;
+              timerElement.textContent = `Starts: ${formatLocalDateTime(match.startTime)} (in ${hours}h ${minutes}m)`;
             } else {
-              timer.textContent = `Starts: ${formatLocalDateTime(match.startTime)}`;
+              timerElement.textContent = `Starts: ${formatLocalDateTime(match.startTime)}`;
             }
           } else if (status === 'recent') {
-            timer.textContent = '';
+            timerElement.textContent = '';
           }
         }
       });
     }
 
-    // Render matches
-    const matchesContainer = document.getElementById('matchesContainer');
-    if (matches.length === 0) {
-      matchesContainer.innerHTML = '<div class="no-matches">No matches available</div>';
-    } else {
-      matchesContainer.innerHTML = matches.map(match => {
-        const status = getMatchStatus(match.startTime, match.endTime);
-        return `
-          <div class="match-card">
-            <div class="match-header">${match.title}</div>
-            <div class="match-content">
-              <img src="${match.leagueLogo}" alt="League Logo" class="league-logo">
-              <div class="team-container">
-                <div class="team">
-                  <img src="${match.teamA.logo}" alt="${match.teamA.name}">
-                  <span>${match.teamA.name}</span>
-                </div>
-                <div class="team">
-                  <span>${match.teamB.name}</span>
-                  <img src="${match.teamB.logo}" alt="${match.teamB.name}">
+    function renderMatches(matchesToRender) {
+      const container = document.getElementById('matchesContainer');
+      container.innerHTML = matchesToRender.length === 0
+        ? '<div style="text-align: center; color: #FFFFFF; opacity: 0.7; font-size: 16px; margin: 20px 0;">No matches available</div>'
+        : matchesToRender.map(match => {
+            const status = getMatchStatus(match.startTime, match.endTime);
+            return `
+              <div class="match-card" data-match-id="${match.id}">
+                <div class="match-header">${match.title}</div>
+                <div class="match-content">
+                  <img src="${match.leagueLogo}" alt="League Logo" class="league-logo">
+                  <div class="team-container">
+                    <div class="team">
+                      <img src="${match.teamA.logo}" alt="${match.teamA.name}">
+                      <span>${match.teamA.name}</span>
+                    </div>
+                    <div class="team">
+                      <span>${match.teamB.name}</span>
+                      <img src="${match.teamB.logo}" alt="${match.teamB.name}">
+                    </div>
+                  </div>
+                  <div class="timer" id="timer-${match.id}"></div>
+                  <div class="status">${status.charAt(0).toUpperCase() + status.slice(1)}</div>
                 </div>
               </div>
-              <div class="timer" id="timer-${match.id}"></div>
-              <div class="status">${status.charAt(0).toUpperCase() + status.slice(1)}</div>
-              <div class="links-container">
-                ${match.links.map(link => `<a href="#" class="stream-link" data-url="${link.url}" data-match-id="${match.id}">${link.title}</a>`).join('')}
-              </div>
-            </div>
-          </div>
-        `;
-      }).join('');
+            `;
+          }).join('');
+      updateTimers();
     }
 
-    // Handle stream link clicks
-    matchesContainer.addEventListener('click', (e) => {
+    function openModal(matchId) {
+      const match = matches.find(m => m.id === matchId);
+      if (!match) return;
+      const modal = document.getElementById('streamModal');
+      const modalTitle = document.getElementById('modalTitle');
+      const modalLinks = document.getElementById('modalLinks');
+      modalTitle.textContent = match.title;
+      modalLinks.innerHTML = match.links.map(link => `
+        <a href="#" class="stream-link" data-url="${link.url}" data-match-id="${match.id}">${link.title}</a>
+      `).join('');
+      modal.style.display = 'flex';
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('streamModal');
+      modal.style.display = 'none';
+    }
+
+    function filterMatches(filter) {
+      if (filter === 'all') {
+        filteredMatches = [...matches];
+      } else if (['live', 'upcoming', 'recent'].includes(filter)) {
+        filteredMatches = matches.filter(match => getMatchStatus(match.startTime, match.endTime) === filter);
+      } else {
+        filteredMatches = matches.filter(match => match.category === filter);
+      }
+      renderMatches(filteredMatches);
+    }
+
+    document.getElementById('filterContainer').addEventListener('click', (e) => {
+      if (e.target.classList.contains('filter-button')) {
+        document.querySelectorAll('.filter-button').forEach(btn => btn.classList.remove('active'));
+        e.target.classList.add('active');
+        const filter = e.target.dataset.filter;
+        filterMatches(filter);
+      }
+    });
+
+    document.getElementById('matchesContainer').addEventListener('click', (e) => {
+      const matchCard = e.target.closest('.match-card');
+      if (matchCard) {
+        const matchId = matchCard.dataset.matchId;
+        openModal(matchId);
+      }
+    });
+
+    document.getElementById('streamModal').addEventListener('click', (e) => {
       if (e.target.classList.contains('stream-link')) {
         e.preventDefault();
         const url = e.target.dataset.url;
@@ -297,9 +430,9 @@
       }
     });
 
-    // Update timers every second
+    // Initialize with all matches
     setInterval(updateTimers, 1000);
-    updateTimers();
+    filterMatches('all');
   </script>
 </body>
 </html>
