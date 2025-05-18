@@ -5,12 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Live Events</title>
+  <!-- NProgress CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.css" integrity="sha512-42kB9yDlYiCEfx2xVwq0q7hT4uf26Z2J+IIf65hFrshxS3Ujjr27ljo8hX8rJ/4FlZTL9t28a/a6E4wDQMHLrPQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style>
     body {
       margin: 0;
       font-family: Arial, sans-serif;
       background: #1C2526;
       color: #FFFFFF;
+      transition: opacity 0.3s ease; /* For fade transition */
     }
 
     .container {
@@ -26,7 +29,7 @@
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
-      margin-bottom: 20px;
+      margin-bottom: 10px;
       justify-content: center;
     }
 
@@ -41,6 +44,59 @@
     }
 
     .filter-button.active, .filter-button:hover {
+      background: #FFD700;
+      color: #1C2526;
+    }
+
+    .category-dropdown {
+      margin: 10px 0;
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-button {
+      padding: 10px 20px;
+      background: #2B2F30;
+      border: 1px solid #FFD700;
+      color: #FFD700;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.3s;
+    }
+
+    .dropdown-button:hover {
+      background: #FFD700;
+      color: #1C2526;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background: #2B2F30;
+      border: 1px solid #FFD700;
+      border-radius: 5px;
+      min-width: 160px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      z-index: 1;
+      top: 100%;
+      left: 0;
+    }
+
+    .dropdown-content.show {
+      display: block;
+    }
+
+    .dropdown-item {
+      padding: 10px 15px;
+      color: #FFD700;
+      text-decoration: none;
+      display: block;
+      font-size: 14px;
+      transition: background 0.3s;
+    }
+
+    .dropdown-item:hover {
       background: #FFD700;
       color: #1C2526;
     }
@@ -218,9 +274,9 @@
       background: #CC0000;
     }
 
-    /* Responsive adjustments for non-card elements */
+    /* Responsive adjustments */
     @media (max-width: 768px) {
-      .filter-button {
+      .filter-button, .dropdown-button {
         padding: 8px 15px;
         font-size: 14px;
       }
@@ -238,6 +294,11 @@
 
       .filter-container {
         gap: 5px;
+      }
+
+      .dropdown-button {
+        padding: 6px 12px;
+        font-size: 13px;
       }
 
       .modal-content {
@@ -259,12 +320,11 @@
       <button class="filter-button" data-filter="live">Live</button>
       <button class="filter-button" data-filter="upcoming">Upcoming</button>
       <button class="filter-button" data-filter="recent">Recent</button>
-      <button class="filter-button" data-filter="Football">Football</button>
-      <button class="filter-button" data-filter="Cricket">Cricket</button>
-      <button class="filter-button" data-filter="Motorsport">Motorsport</button>
-      <button class="filter-button" data-filter="Wrestling">Wrestling</button>
     </div>
-
+    <div class="category-dropdown" id="categoryDropdown">
+      <button class="dropdown-button">Select Category</button>
+      <div class="dropdown-content" id="dropdownContent"></div>
+    </div>
     <div class="matches-container" id="matchesContainer"></div>
   </div>
 
@@ -277,6 +337,8 @@
     </div>
   </div>
 
+  <!-- NProgress JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.js" integrity="sha512-bUg5gaqBVaXIJNuebamJ6uex//mjxPk8kljQTdM1Sw2Y2fE2QjVxw+4+eq0EtmS/oOguPDzFjSg71fF0SbCbrlA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script type="module">
     // Import matches from separate file
     import matches from '/data/matches.js';
@@ -295,8 +357,16 @@
       'go:willow2': 'https://example.com/willow2.m3u8'
     };
 
+    // Loading bar for initial page load
+    NProgress.configure({ showSpinner: false, speed: 500 });
+    NProgress.start();
+    window.onload = () => {
+      setTimeout(() => NProgress.done(), 500); // Simulate load time
+    };
+
     // Filter and render matches
     let filteredMatches = [...matches];
+    let activeFilter = 'all';
 
     function getMatchStatus(startTime, endTime) {
       const now = new Date().getTime();
@@ -392,6 +462,7 @@
     }
 
     function filterMatches(filter) {
+      activeFilter = filter;
       if (filter === 'all') {
         filteredMatches = [...matches];
       } else if (['live', 'upcoming', 'recent'].includes(filter)) {
@@ -400,6 +471,27 @@
         filteredMatches = matches.filter(match => match.category === filter);
       }
       renderMatches(filteredMatches);
+      updateDropdown();
+    }
+
+    function updateDropdown() {
+      const categories = ['Football', 'Cricket', 'Motorsport', 'Wrestling'];
+      const dropdownContent = document.getElementById('dropdownContent');
+      dropdownContent.innerHTML = categories.map(category => {
+        const count = matches.filter(match => match.category === category).length;
+        return `<a href="#" class="dropdown-item" data-filter="${category}">${category} (${count})</a>`;
+      }).join('');
+      // Highlight active category
+      const items = dropdownContent.querySelectorAll('.dropdown-item');
+      items.forEach(item => {
+        if (item.dataset.filter === activeFilter) {
+          item.style.background = '#FFD700';
+          item.style.color = '#1C2526';
+        } else {
+          item.style.background = '';
+          item.style.color = '';
+        }
+      });
     }
 
     // Event listeners
@@ -425,18 +517,50 @@
         e.preventDefault();
         const url = e.target.dataset.url;
         const matchId = e.target.dataset.matchId;
-        sessionStorage.setItem('selectedStream', url);
-        sessionStorage.setItem('selectedMatchId', matchId);
-        window.location.href = '/events/player.html';
+        // Fade out before redirect
+        document.body.style.opacity = '0';
+        setTimeout(() => {
+          sessionStorage.setItem('selectedStream', url);
+          sessionStorage.setItem('selectedMatchId', matchId);
+          window.location.href = '/events/player.html';
+        }, 300); // Match transition duration
       }
     });
 
-    // Fix: Attach close button event listener programmatically
     document.querySelector('.modal-content .close-button').addEventListener('click', closeModal);
 
-    // Initialize with all matches
+    // Dropdown toggle
+    const dropdownButton = document.querySelector('.dropdown-button');
+    const dropdownContent = document.getElementById('dropdownContent');
+    dropdownButton.addEventListener('click', () => {
+      dropdownContent.classList.toggle('show');
+    });
+
+    // Dropdown filter selection
+    dropdownContent.addEventListener('click', (e) => {
+      if (e.target.classList.contains('dropdown-item')) {
+        e.preventDefault();
+        const filter = e.target.dataset.filter;
+        filterMatches(filter);
+        dropdownContent.classList.remove('show');
+        dropdownButton.textContent = e.target.textContent.split(' (')[0]; // Update button text
+        // Reset main filter buttons
+        document.querySelectorAll('.filter-button').forEach(btn => btn.classList.remove('active'));
+        document.querySelector('.filter-button[data-filter="all"]').classList.add('active');
+      }
+    });
+
+    // Close dropdown if clicking outside
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.category-dropdown')) {
+        dropdownContent.classList.remove('show');
+      }
+    });
+
+    // Initialize
     setInterval(updateTimers, 1000);
     filterMatches('all');
+    updateDropdown();
   </script>
 </body>
 </html>
